@@ -2,7 +2,8 @@
     "name": "chat-app",
     "version": "1.0.0",
     "description": "A minimal Electron application",
-    "main": "main.js",
+    "main": "main.mjs",
+    "type": "module",
     "scripts": {
         "start": "electron . --no-sandbox",
         "build": "electron-builder"
@@ -23,17 +24,19 @@
         "appId": "com.example.chatapp",
         "productName": "ChatApp",
         "files": [
-            "main.js",
+            "main.mjs",
             "index.html",
             "package.json",
             "fonts/**/*",
-            "svg/**/*"
+            "svg/**/*",
+            "dist/**/*",
+            "node_modules/**/*"
         ],
         "directories": {
-            "buildResources": "build"
+            "buildResources": "./"
         },
         "win": {
-            "target": "nsis"
+            "target": "portable"
         },
         "linux": {
             "target": "AppImage"
