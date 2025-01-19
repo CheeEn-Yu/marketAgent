@@ -10,7 +10,7 @@ npm install
 npm start
 
 // To build
-npm build run
+npm run build
 ```
 
 
