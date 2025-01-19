@@ -27,10 +27,10 @@
             "main.mjs",
             "index.html",
             "package.json",
+            "preload.js",
+            "sample.py",
             "fonts/**/*",
-            "svg/**/*",
-            "dist/**/*",
-            "node_modules/**/*"
+            "svg/**/*"
         ],
         "directories": {
             "buildResources": "./"
