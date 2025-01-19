@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+    <style>
+        body { 
+            font-family: 'EnglishFont', 'ChineseFont', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh; 
+            transition: background-color 0.5s, color 0.5s;
+            overflow-x: hidden; /* 禁用橫向滾動條 */
+            letter-spacing: 0.05em;
+        }
+      
+        body * {
+            font-family: inherit;
+        }
+      
+        @font-face {
+            font-family: 'EnglishFont';
+            src: url('fonts/MonaspaceRadon-Medium.otf') format('opentype');
+        }
+      
+        @font-face {
+            font-family: 'ChineseFont';
+            src: url('fonts/FZ_xbs_gbk.ttf') format('truetype');
+        }
+        
+        #chat { 
+            flex: 1; 
+            border: 1px solid #ccc; 
+            overflow-y: overlay; 
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #chat::-webkit-scrollbar {
+            width: 8px; /* 調整滾動條寬度 */
+        }
+          
+        #chat::-webkit-scrollbar-thumb {
+            background-color: #888; /* 滾動條顏色 */
+            border-radius: 10px; /* 圓角 */
+        }
+          
+        #chat::-webkit-scrollbar-thumb:hover {
+            background-color: #555; /* 滾動條懸停顏色 */
+        }
+        
+        .message {
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 15px; /* 圓邊 */
+            max-width: 66%; /* 超過2/3寬度自動換行 */
+            word-wrap: break-word; /* 自動換行 */
+            opacity: 0;
+            animation: fadeIn 0.5s forwards; /* 動態效果 */
+        }
+        
+        .user-message {
+            background-color: #454b51;
+            color: white;
+            align-self: flex-end;
+        }
+        
+        .bot-message {
+            background-color: #454b51;
+            color: white;
+            align-self: flex-start;
+        }
+        
+        #input-container { 
+            display: flex; 
+            border-top: 1px solid #ccc; 
+            padding: 10px; 
+            background-color: #f0f0f0; /* 淺色背景 */
+            border-radius: 15px; /* 圓邊 */
+            margin: 10px; /* 離視窗底邊一點距離 */
+        }
+        
+        .dark-mode #input-container {
+            background-color: #2e2e2e; /* 深色背景 */
+        }
+        
+        #input { 
+            flex: 1; 
+            padding: 10px; 
+            border: none; /* 移除邊框 */
+            outline: none; 
+            border-radius: 15px; /* 圓邊 */
+            background-color: #e0e0e0; /* 淺色背景 */
+            resize: none; /* 禁用調整大小 */
+            overflow-y: hidden; /* 隱藏垂直滾動條 */
+            word-wrap: break-word; /* 自動換行 */
+            height: 24px; /* 初始高度 */
+            box-shadow: none; /* 移除陰影 */
+            line-height: 24px; /* 文字高度置中 */
+        }
+        
+        .dark-mode #input {
+            background-color: #3e3e3e; /* 深色背景 */
+            color: #ffffff;
+        }
+        
+        #send-button {
+            padding: 10px;
+            border: none;
+            background-color: #e0e0e0; /* 與輸入框一致的背景色 */
+            cursor: pointer;
+            border-radius: 50%; /* 圓形按鈕 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 40px; /* 固定高度 */
+            width: 40px; /* 固定寬度 */
+            margin-left: 5px; /* 稍微往右一點點 */
+            box-shadow: none; /* 移除陰影 */
+        }
+        
+        .dark-mode #send-button {
+            background-color: #3e3e3e; /* 深色背景 */
+        }
+        
+        #send-button img {
+            width: 24px;
+            height: 24px;
+            border: none; /* 移除邊框 */
+            box-shadow: none; /* 移除陰影 */
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .dark-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
+        
+        .dark-mode .user-message {
+            background-color: #1e1e1e;
+            color: #ffffff;
+        }
+        
+        .dark-mode .bot-message {
+            background-color: #2e2e2e;
+            color: #ffffff;
+        }
+        
+        .floating-button {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: opacity 0.3s, background-color 0.5s, color 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .floating-button:hover {
+            opacity: 1;
+        }
+        
+        #settings-button {
+            bottom: 100px; /* 發送按鈕上方一點點距離 */
+            right: 20px;
+            background-color: #e0e0e0; /* 與輸入框一致的背景色 */
+            height: 40px; /* 固定高度 */
+            width: 40px; /* 固定寬度 */
+            z-index: 3; /* 設定鍵在最上層 */
+            opacity: 1; /* 設定按鈕不變淡 */
+            transition: background-color 0.5s, color 0.5s; /* 移除 opacity 的 transition */
+        }
+        
+        .dark-mode #settings-button {
+            background-color: #3e3e3e; /* 深色背景 */
+        }
+        
+        #settings-button img {
+            width: 24px; /* 調整圖片寬度 */
+            height: 24px; /* 調整圖片高度 */
+        }
+        
+        #toggle-language, #toggle-theme {
+            display: none;
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: opacity 0.3s, background-color 0.5s, color 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            bottom: 100px;
+            right: 20px;
+            z-index: 2; /* 隱藏在設定鍵後方 */
+        }
+        
+        .dark-mode #toggle-language, .dark-mode #toggle-theme {
+            background-color: #3e3e3e; /* 深色背景 */
+        }
+        
+        .show-buttons #toggle-language, .show-buttons #toggle-theme {
+            display: flex;
+        }
+        
+        .show-buttons #toggle-language {
+            animation: slideInLeft2 0.3s forwards;
+            bottom: 100px;
+            right: 140px;
+        }
+        
+        .show-buttons #toggle-theme {
+            animation: slideInLeft 0.3s forwards;
+            bottom: 100px;
+            right: 80px;
+        }
+        
+        .hide-buttons #toggle-language, .hide-buttons #toggle-theme {
+            display: flex;
+        }
+        
+        .hide-buttons #toggle-language {
+            animation: slideInRight2 0.3s forwards;
+            bottom: 100px;
+            right: 20px;
+        }
+        
+        .hide-buttons #toggle-theme {
+            animation: slideInRight 0.3s forwards;
+            bottom: 100px;
+            right: 20px;
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(50px);
+                opacity: 0;
+            }
+            to {
+              transform: translateX(0);
+              opacity: 1;
+            }
+        }
+        
+        @keyframes slideInLeft2 {
+            from {
+                transform: translateX(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideInRight2 {
+            from {
+                transform: translateX(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        #scroll-to-bottom, #scroll-to-top {
+            display: none;
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            background-color: inherit; /* 與視窗背景色一致 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 4; /* 高於其他元素 */
+        }
+          
+        #scroll-to-bottom {
+            bottom: 100px; /* 略高於輸入框 */
+            left: 50%;
+            transform: translateX(-50%);
+        }
+          
+        #scroll-to-top {
+            top: 20px; /* 略低於視窗高度 */
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        #scroll-to-bottom img, #scroll-to-top img {
+            width: 24px; /* 調整圖片寬度 */
+            height: 24px; /* 調整圖片高度 */
+        }
+          
+        .dark-mode #scroll-to-bottom img {
+            content: url('svg/to_bottom.white.svg');
+        }
+          
+        .dark-mode #scroll-to-top img {
+            content: url('svg/to_top.white.svg');
+        }
+    
+    </style>
+</head>
+
+<body>
+    <div id="chat"></div>
+    <div id="input-container">
+        <textarea id="input" placeholder="輸入訊息..."></textarea>
+        <button id="send-button">
+        <img id="send-icon" src="svg/uarrorw.black.svg" alt="Send">
+        </button>
+    </div>
+
+    <button id="scroll-to-bottom" class="floating-button">
+        <img id="to-bottom-icon" src="svg/to_bottom.black.svg" alt="Scroll to Bottom">
+    </button>
+    
+    <button id="scroll-to-top" class="floating-button">
+        <img id="to-top-icon" src="svg/to_top.black.svg" alt="Scroll to Top">
+    </button>
+    
+    <button id="settings-button" class="floating-button">
+        <img id="settings-icon" src="svg/setting.black.svg" alt="Settings">
+    </button>
+    
+    <button id="toggle-language" class="floating-button">EN</button>
+    
+    <button id="toggle-theme" class="floating-button">
+        <img id="theme-icon" src="svg/moon.svg" alt="Toggle Theme" width="24" height="24">
+    </button>
+    
+    <script>
+        const chat = document.getElementById('chat');
+        const input = document.getElementById('input');
+        const sendButton = document.getElementById('send-button');
+        const sendIcon = document.getElementById('send-icon');
+        const settingsButton = document.getElementById('settings-button');
+        const settingsIcon = document.getElementById('settings-icon');
+        const toggleLanguageButton = document.getElementById('toggle-language');
+        const toggleThemeButton = document.getElementById('toggle-theme');
+        const themeIcon = document.getElementById('theme-icon');
+        const scrollToBottomButton = document.getElementById('scroll-to-bottom');
+        const scrollToTopButton = document.getElementById('scroll-to-top');
+        
+        let isChinese = true;
+        let isDarkMode = false;
+        let areButtonsVisible = false;
+
+        input.addEventListener('input', autoResize);
+        input.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        });
+
+        sendButton.addEventListener('click', sendMessage);
+
+        settingsButton.addEventListener('click', toggleSettings);
+
+        toggleLanguageButton.addEventListener('click', () => {
+            isChinese = !isChinese;
+            updateLanguage();
+        });
+
+        toggleThemeButton.addEventListener('click', () => {
+            isDarkMode = !isDarkMode;
+            updateTheme();
+        });
+
+        function autoResize() {
+            const maxHeight = 200;
+            if (input.scrollHeight > input.clientHeight) {
+                input.style.height = Math.min(input.scrollHeight, maxHeight) + 'px';
+            }
+        }
+
+        function sendMessage() {
+            const message = input.value;
+            if (message.trim()) {
+                appendMessage(message, 'user-message');
+                window.electron.sendMessage(message);
+                input.value = '';
+                input.dispatchEvent(new Event('input'));
+                autoResize(); // 重置高度
+            }
+        }
+
+        window.electron.onReceiveMessage((message) => {
+            appendMessage(message, 'bot-message');
+        });
+
+        function appendMessage(message, className) {
+            const messageElement = document.createElement('div');
+            messageElement.textContent = message;
+            messageElement.classList.add('message', className);
+            chat.appendChild(messageElement);
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        function updateLanguage() {
+            document.title = 'Chat App';
+            input.placeholder = isChinese ? '輸入訊息...' : 'Type a message...';
+            toggleLanguageButton.textContent = isChinese ? 'EN' : '中';
+            toggleLanguageButton.style.backgroundColor = isDarkMode ? '#121212' : '#ffffff';
+            toggleLanguageButton.style.color = isDarkMode ? '#ffffff' : '#121212';
+        }
+
+        function updateTheme() {
+            document.body.classList.toggle('dark-mode', isDarkMode);
+            themeIcon.src = isDarkMode ? 'svg/sun.svg' : 'svg/moon.svg';
+            sendIcon.src = isDarkMode ? 'svg/uarrorw.white.svg' : 'svg/uarrorw.black.svg';
+            settingsIcon.src = isDarkMode ? 'svg/setting.white.svg' : 'svg/setting.black.svg';
+            toggleThemeButton.style.backgroundColor = isDarkMode ? '#121212' : '#ffffff';
+            toggleThemeButton.style.color = isDarkMode ? '#ffffff' : '#121212';
+            updateLanguage(); // 更新語言按鈕的顏色
+        }
+
+        function toggleSettings() {
+            areButtonsVisible = !areButtonsVisible;
+            if (areButtonsVisible) {
+                document.body.classList.add('show-buttons');
+                document.body.classList.remove('hide-buttons');
+            } else {
+                document.body.classList.add('hide-buttons');
+                document.body.classList.remove('show-buttons');
+            }
+        }
+
+        chat.addEventListener('scroll', () => {
+            const isAtBottom = chat.scrollHeight - chat.scrollTop === chat.clientHeight;
+            const isAtTop = chat.scrollTop === 0;
+          
+            scrollToBottomButton.style.display = isAtBottom ? 'none' : 'flex';
+            scrollToTopButton.style.display = isAtTop ? 'none' : 'flex';
+        });
+          
+        scrollToBottomButton.addEventListener('click', () => {
+            chat.scrollTop = chat.scrollHeight;
+        });
+          
+        scrollToTopButton.addEventListener('click', () => {
+            chat.scrollTop = 0;
+        });
+
+        // 初始化語言和主題
+        updateLanguage();
+        updateTheme();
+        scrollToBottomButton.style.display = 'none';
+        scrollToTopButton.style.display = 'none';
+    
+    </script>
+</body>
+
+</html>
