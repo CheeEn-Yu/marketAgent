@@ -4,17 +4,39 @@
     "description": "A minimal Electron application",
     "main": "main.js",
     "scripts": {
-      "start": "electron . --no-sandbox"
+        "start": "electron . --no-sandbox",
+        "build": "electron-builder"
     },
-    "repository": "https://github.com/electron/electron-quick-start",
+    "repository": "https://github.com/SunParis/Electron-GUI",
     "keywords": [
-      "Electron",
-      "quick",
-      "start",
-      "tutorial",
-      "demo"
+        "Electron",
+        "quick",
+        "start",
+        "tutorial",
+        "demo"
     ],
     "devDependencies": {
-      "electron": "^34.0.0"
+        "electron": "^34.0.0",
+        "electron-builder": "^25.1.8"
+    },
+    "build": {
+        "appId": "com.example.chatapp",
+        "productName": "ChatApp",
+        "files": [
+            "main.js",
+            "index.html",
+            "package.json",
+            "fonts/**/*",
+            "svg/**/*"
+        ],
+        "directories": {
+            "buildResources": "build"
+        },
+        "win": {
+            "target": "nsis"
+        },
+        "linux": {
+            "target": "AppImage"
+        }
     }
-  }
+}

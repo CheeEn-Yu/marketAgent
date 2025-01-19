@@ -1,10 +1,16 @@
 ## (≧▽≦q)
 
 #### To run
-
+> Be sure that you have already installed `npm` .
 ```bash
+// For First
 npm install
+
+// To run
 npm start
+
+// To build
+npm build run
 ```
 
 

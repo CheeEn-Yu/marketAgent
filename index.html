@@ -13,7 +13,7 @@
             flex-direction: column; 
             height: 100vh; 
             transition: background-color 0.5s, color 0.5s;
-            overflow-x: hidden; /* 禁用橫向滾動條 */
+            overflow-x: hidden;
             letter-spacing: 0.05em;
         }
       
@@ -41,26 +41,26 @@
         }
 
         #chat::-webkit-scrollbar {
-            width: 8px; /* 調整滾動條寬度 */
+            width: 8px;
         }
           
         #chat::-webkit-scrollbar-thumb {
-            background-color: #888; /* 滾動條顏色 */
-            border-radius: 10px; /* 圓角 */
+            background-color: #888;
+            border-radius: 10px;
         }
           
         #chat::-webkit-scrollbar-thumb:hover {
-            background-color: #555; /* 滾動條懸停顏色 */
+            background-color: #555;
         }
         
         .message {
             margin: 5px 0;
             padding: 10px;
-            border-radius: 15px; /* 圓邊 */
-            max-width: 66%; /* 超過2/3寬度自動換行 */
-            word-wrap: break-word; /* 自動換行 */
+            border-radius: 15px;
+            max-width: 66%;
+            word-wrap: break-word;
             opacity: 0;
-            animation: fadeIn 0.5s forwards; /* 動態效果 */
+            animation: fadeIn 0.5s forwards;
         }
         
         .user-message {
@@ -79,59 +79,59 @@
             display: flex; 
             border-top: 1px solid #ccc; 
             padding: 10px; 
-            background-color: #f0f0f0; /* 淺色背景 */
-            border-radius: 15px; /* 圓邊 */
-            margin: 10px; /* 離視窗底邊一點距離 */
+            background-color: #f0f0f0;
+            border-radius: 15px;
+            margin: 10px;
         }
         
         .dark-mode #input-container {
-            background-color: #2e2e2e; /* 深色背景 */
+            background-color: #2e2e2e;
         }
         
         #input { 
             flex: 1; 
             padding: 10px; 
-            border: none; /* 移除邊框 */
+            border: none;
             outline: none; 
-            border-radius: 15px; /* 圓邊 */
-            background-color: #e0e0e0; /* 淺色背景 */
-            resize: none; /* 禁用調整大小 */
-            overflow-y: hidden; /* 隱藏垂直滾動條 */
-            word-wrap: break-word; /* 自動換行 */
-            height: 24px; /* 初始高度 */
-            box-shadow: none; /* 移除陰影 */
-            line-height: 24px; /* 文字高度置中 */
+            border-radius: 15px;
+            background-color: #e0e0e0;
+            resize: none;
+            overflow-y: hidden;
+            word-wrap: break-word;
+            height: 24px;
+            box-shadow: none;
+            line-height: 24px;
         }
         
         .dark-mode #input {
-            background-color: #3e3e3e; /* 深色背景 */
+            background-color: #3e3e3e;
             color: #ffffff;
         }
         
         #send-button {
             padding: 10px;
             border: none;
-            background-color: #e0e0e0; /* 與輸入框一致的背景色 */
+            background-color: #e0e0e0;
             cursor: pointer;
-            border-radius: 50%; /* 圓形按鈕 */
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 40px; /* 固定高度 */
-            width: 40px; /* 固定寬度 */
-            margin-left: 5px; /* 稍微往右一點點 */
-            box-shadow: none; /* 移除陰影 */
+            height: 40px;
+            width: 40px;
+            margin-left: 5px;
+            box-shadow: none;
         }
         
         .dark-mode #send-button {
-            background-color: #3e3e3e; /* 深色背景 */
+            background-color: #3e3e3e;
         }
         
         #send-button img {
             width: 24px;
             height: 24px;
-            border: none; /* 移除邊框 */
-            box-shadow: none; /* 移除陰影 */
+            border: none;
+            box-shadow: none;
         }
         
         @keyframes fadeIn {
@@ -174,23 +174,23 @@
         }
         
         #settings-button {
-            bottom: 100px; /* 發送按鈕上方一點點距離 */
+            bottom: 100px;
             right: 20px;
-            background-color: #e0e0e0; /* 與輸入框一致的背景色 */
-            height: 40px; /* 固定高度 */
-            width: 40px; /* 固定寬度 */
-            z-index: 3; /* 設定鍵在最上層 */
-            opacity: 1; /* 設定按鈕不變淡 */
-            transition: background-color 0.5s, color 0.5s; /* 移除 opacity 的 transition */
+            background-color: #e0e0e0;
+            height: 40px;
+            width: 40px;
+            z-index: 3;
+            opacity: 1;
+            transition: background-color 0.5s, color 0.5s;
         }
         
         .dark-mode #settings-button {
-            background-color: #3e3e3e; /* 深色背景 */
+            background-color: #3e3e3e;
         }
         
         #settings-button img {
-            width: 24px; /* 調整圖片寬度 */
-            height: 24px; /* 調整圖片高度 */
+            width: 24px;
+            height: 24px;
         }
         
         #toggle-language, #toggle-theme {
@@ -208,11 +208,11 @@
             justify-content: center;
             bottom: 100px;
             right: 20px;
-            z-index: 2; /* 隱藏在設定鍵後方 */
+            z-index: 2;
         }
         
         .dark-mode #toggle-language, .dark-mode #toggle-theme {
-            background-color: #3e3e3e; /* 深色背景 */
+            background-color: #3e3e3e;
         }
         
         .show-buttons #toggle-language, .show-buttons #toggle-theme {
@@ -299,28 +299,28 @@
             border-radius: 50%;
             border: none;
             cursor: pointer;
-            background-color: inherit; /* 與視窗背景色一致 */
+            background-color: inherit;
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 4; /* 高於其他元素 */
+            z-index: 4;
         }
           
         #scroll-to-bottom {
-            bottom: 100px; /* 略高於輸入框 */
+            bottom: 100px;
             left: 50%;
             transform: translateX(-50%);
         }
           
         #scroll-to-top {
-            top: 20px; /* 略低於視窗高度 */
+            top: 20px;
             left: 50%;
             transform: translateX(-50%);
         }
 
         #scroll-to-bottom img, #scroll-to-top img {
-            width: 24px; /* 調整圖片寬度 */
-            height: 24px; /* 調整圖片高度 */
+            width: 24px;
+            height: 24px;
         }
           
         .dark-mode #scroll-to-bottom img {
@@ -362,6 +362,7 @@
     </button>
     
     <script>
+        // Get references to DOM elements
         const chat = document.getElementById('chat');
         const input = document.getElementById('input');
         const sendButton = document.getElementById('send-button');
@@ -374,10 +375,12 @@
         const scrollToBottomButton = document.getElementById('scroll-to-bottom');
         const scrollToTopButton = document.getElementById('scroll-to-top');
         
+        // Initialize state variables
         let isChinese = true;
         let isDarkMode = false;
         let areButtonsVisible = false;
 
+        // Add event listeners
         input.addEventListener('input', autoResize);
         input.addEventListener('keydown', (event) => {
             if (event.key === 'Enter' && !event.shiftKey) {
@@ -400,6 +403,7 @@
             updateTheme();
         });
 
+        // Automatically resize the input field based on its content
         function autoResize() {
             const maxHeight = 200;
             if (input.scrollHeight > input.clientHeight) {
@@ -407,6 +411,7 @@
             }
         }
 
+        // Send a message and clear the input field
         function sendMessage() {
             const message = input.value;
             if (message.trim()) {
@@ -414,14 +419,16 @@
                 window.electron.sendMessage(message);
                 input.value = '';
                 input.dispatchEvent(new Event('input'));
-                autoResize(); // 重置高度
+                autoResize();
             }
         }
 
+        // Receive a message from the bot and append it to the chat
         window.electron.onReceiveMessage((message) => {
             appendMessage(message, 'bot-message');
         });
 
+        // Append a message to the chat
         function appendMessage(message, className) {
             const messageElement = document.createElement('div');
             messageElement.textContent = message;
@@ -430,6 +437,7 @@
             chat.scrollTop = chat.scrollHeight;
         }
 
+        // Update the language of the UI
         function updateLanguage() {
             document.title = 'Chat App';
             input.placeholder = isChinese ? '輸入訊息...' : 'Type a message...';
@@ -438,6 +446,7 @@
             toggleLanguageButton.style.color = isDarkMode ? '#ffffff' : '#121212';
         }
 
+        // Update the theme of the UI
         function updateTheme() {
             document.body.classList.toggle('dark-mode', isDarkMode);
             themeIcon.src = isDarkMode ? 'svg/sun.svg' : 'svg/moon.svg';
@@ -445,9 +454,10 @@
             settingsIcon.src = isDarkMode ? 'svg/setting.white.svg' : 'svg/setting.black.svg';
             toggleThemeButton.style.backgroundColor = isDarkMode ? '#121212' : '#ffffff';
             toggleThemeButton.style.color = isDarkMode ? '#ffffff' : '#121212';
-            updateLanguage(); // 更新語言按鈕的顏色
+            updateLanguage();
         }
 
+        // Toggle the visibility of the settings buttons
         function toggleSettings() {
             areButtonsVisible = !areButtonsVisible;
             if (areButtonsVisible) {
@@ -459,6 +469,7 @@
             }
         }
 
+        // Show or hide the scroll buttons based on the scroll position
         chat.addEventListener('scroll', () => {
             const isAtBottom = chat.scrollHeight - chat.scrollTop === chat.clientHeight;
             const isAtTop = chat.scrollTop === 0;
@@ -467,21 +478,24 @@
             scrollToTopButton.style.display = isAtTop ? 'none' : 'flex';
         });
           
+        // Scroll to the bottom of the chat
         scrollToBottomButton.addEventListener('click', () => {
             chat.scrollTop = chat.scrollHeight;
         });
           
+        // Scroll to the top of the chat
         scrollToTopButton.addEventListener('click', () => {
             chat.scrollTop = 0;
         });
 
-        // 初始化語言和主題
+        // Initialize language and theme
         updateLanguage();
         updateTheme();
         scrollToBottomButton.style.display = 'none';
         scrollToTopButton.style.display = 'none';
     
     </script>
+
 </body>
 
 </html>
