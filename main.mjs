@@ -4,9 +4,59 @@ import { fileURLToPath } from 'url';
 import { execFile } from 'child_process';
 import { promises as fs } from 'fs';
 import { tmpdir } from 'os';
+import http from 'http';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+function sendMessageToServer(message) {
+    return new Promise((resolve, reject) => {
+        const options = {
+            hostname: '140.112.252.40', // Replace with the actual remote IP
+            port: 8080,                // Port number
+            path: '/',                 // Path on the server (e.g., `/`)
+            method: 'POST',            // HTTP method
+            headers: {
+                'Content-Type': 'text/plain',
+                'Content-Length': Buffer.byteLength(message),
+            },
+        };
+
+        const req = http.request(options, (res) => {
+            let responseData = '';
+
+            res.setEncoding('utf8');
+            res.on('data', (chunk) => {
+                responseData += chunk;
+            });
+
+            res.on('end', () => {
+                if (res.statusCode === 200) {
+                    resolve(responseData.trim());
+                } else {
+                    reject(new Error(`Server responded with status code: ${res.statusCode}`));
+                }
+            });
+        });
+
+        req.on('error', (err) => {
+            reject(err);
+        });
+
+        // Write the message body and end the request
+        req.write(message);
+        req.end();
+    });
+}
+
+async function callServerFunction(inputString) {
+    try {
+        const result = await sendMessageToServer(inputString);
+        return result;
+    } catch (error) {
+        throw new Error(`Failed to communicate with server: ${error.message}`);
+    }
+}
 
 async function callPythonReverseString(inputString) {
     const scriptPath = join(app.getAppPath(), 'sample.py');
@@ -30,7 +80,7 @@ async function callPythonReverseString(inputString) {
 function app_on() {
     ipcMain.on('send-message', async (event, message) => {
         try {
-            const result = await callPythonReverseString(message);
+            const result = await callServerFunction(message);
             event.reply('receive-message', result);
         } catch (error) {
             console.error('Error calling Python script:', error);
