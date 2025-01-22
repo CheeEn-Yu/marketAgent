@@ -18,4 +18,4 @@ npm run build
 #### To Note That
 
 1. Icons are downloaded from [`https://www.svgrepo.com/`](https://www.svgrepo.com/).
-2. Fonts are stolen from SYC's computer.
+2. Fonts are stolen from [SunParis](https://github.com/SunParis)'s computer.
