@@ -322,6 +322,33 @@
             width: 24px;
             height: 24px;
         }
+
+        #open-file {
+            padding: 10px;
+            border: none;
+            background-color: #e0e0e0;
+            cursor: pointer;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 40px;
+            width: 40px;
+            margin-left: 5px;
+            box-shadow: none;
+        }
+
+        .dark-mode #open-file {
+            background-color: #3e3e3e;
+        }
+
+        #open-file img,
+        #open-file svg {
+            width: 24px; /* icon本身更小 */
+            height: 24px;
+            display: block; /* 確保沒有額外空間 */
+        }
+
           
         .dark-mode #scroll-to-bottom img {
             content: url('svg/to_bottom.white.svg');
@@ -340,6 +367,10 @@
         <textarea id="input" placeholder="輸入訊息..."></textarea>
         <button id="send-button">
         <img id="send-icon" src="svg/uarrorw.black.svg" alt="Send">
+        </button>
+
+        <button id="open-file">
+            <img id="upload-icon" src="svg/clip.svg" alt="Upload File">
         </button>
     </div>
 
@@ -363,6 +394,7 @@
     
     <script>
         // Get references to DOM elements
+        const { openDirectoryDialog } = window.electron;
         const chat = document.getElementById('chat');
         const input = document.getElementById('input');
         const sendButton = document.getElementById('send-button');
@@ -386,6 +418,13 @@
             if (event.key === 'Enter' && !event.shiftKey) {
                 event.preventDefault();
                 sendMessage();
+            }
+        });
+
+        document.getElementById('open-file').addEventListener('click', async () => {
+            const directory = await openDirectoryDialog();
+            if (directory && directory.length > 0) {
+                alert(`Selected Directory: ${directory[0]}`);
             }
         });
 

@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, Menu } from 'electron';
+import { app, BrowserWindow, ipcMain, Menu, dialog } from 'electron';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { execFile } from 'child_process';
@@ -78,6 +78,13 @@ async function callPythonReverseString(inputString) {
 }
 
 function app_on() {
+    ipcMain.handle('open-directory-dialog', async (event) => {
+        const result = await dialog.showOpenDialog({
+            properties: ['open-file']
+        });
+        return result.filePaths;
+    });
+
     ipcMain.on('send-message', async (event, message) => {
         try {
             const result = await callServerFunction(message);
