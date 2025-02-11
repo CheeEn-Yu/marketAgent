@@ -4,73 +4,77 @@ import { FC } from "react"
 import { Button } from "../ui/button"
 
 interface APIStepProps {
-  openaiAPIKey: string
-  openaiOrgID: string
-  azureOpenaiAPIKey: string
-  azureOpenaiEndpoint: string
-  azureOpenai35TurboID: string
-  azureOpenai45TurboID: string
-  azureOpenai45VisionID: string
-  azureOpenaiEmbeddingsID: string
-  anthropicAPIKey: string
+  // openaiAPIKey: string
+  // openaiOrgID: string
+  // azureOpenaiAPIKey: string
+  // azureOpenaiEndpoint: string
+  // azureOpenai35TurboID: string
+  // azureOpenai45TurboID: string
+  // azureOpenai45VisionID: string
+  // azureOpenaiEmbeddingsID: string
+  // anthropicAPIKey: string
   googleGeminiAPIKey: string
-  mistralAPIKey: string
-  groqAPIKey: string
-  perplexityAPIKey: string
-  useAzureOpenai: boolean
-  openrouterAPIKey: string
-  onOpenrouterAPIKeyChange: (value: string) => void
-  onOpenaiAPIKeyChange: (value: string) => void
-  onOpenaiOrgIDChange: (value: string) => void
-  onAzureOpenaiAPIKeyChange: (value: string) => void
-  onAzureOpenaiEndpointChange: (value: string) => void
-  onAzureOpenai35TurboIDChange: (value: string) => void
-  onAzureOpenai45TurboIDChange: (value: string) => void
-  onAzureOpenai45VisionIDChange: (value: string) => void
-  onAzureOpenaiEmbeddingsIDChange: (value: string) => void
-  onAnthropicAPIKeyChange: (value: string) => void
+  // mistralAPIKey: string
+  // groqAPIKey: string
+  // perplexityAPIKey: string
+  // useAzureOpenai: boolean
+  // openrouterAPIKey: string
+  userRole: string
+  // onOpenrouterAPIKeyChange: (value: string) => void
+  // onOpenaiAPIKeyChange: (value: string) => void
+  // onOpenaiOrgIDChange: (value: string) => void
+  // onAzureOpenaiAPIKeyChange: (value: string) => void
+  // onAzureOpenaiEndpointChange: (value: string) => void
+  // onAzureOpenai35TurboIDChange: (value: string) => void
+  // onAzureOpenai45TurboIDChange: (value: string) => void
+  // onAzureOpenai45VisionIDChange: (value: string) => void
+  // onAzureOpenaiEmbeddingsIDChange: (value: string) => void
+  // onAnthropicAPIKeyChange: (value: string) => void
   onGoogleGeminiAPIKeyChange: (value: string) => void
-  onMistralAPIKeyChange: (value: string) => void
-  onGroqAPIKeyChange: (value: string) => void
-  onPerplexityAPIKeyChange: (value: string) => void
-  onUseAzureOpenaiChange: (value: boolean) => void
+  // onMistralAPIKeyChange: (value: string) => void
+  // onGroqAPIKeyChange: (value: string) => void
+  // onPerplexityAPIKeyChange: (value: string) => void
+  // onUseAzureOpenaiChange: (value: boolean) => void
+  onUserRoleChange: (value: string) => void
 }
 
 export const APIStep: FC<APIStepProps> = ({
-  openaiAPIKey,
-  openaiOrgID,
-  azureOpenaiAPIKey,
-  azureOpenaiEndpoint,
-  azureOpenai35TurboID,
-  azureOpenai45TurboID,
-  azureOpenai45VisionID,
-  azureOpenaiEmbeddingsID,
-  anthropicAPIKey,
+  // openaiAPIKey,
+  // openaiOrgID,
+  // azureOpenaiAPIKey,
+  // azureOpenaiEndpoint,
+  // azureOpenai35TurboID,
+  // azureOpenai45TurboID,
+  // azureOpenai45VisionID,
+  // azureOpenaiEmbeddingsID,
+  // anthropicAPIKey,
   googleGeminiAPIKey,
-  mistralAPIKey,
-  groqAPIKey,
-  perplexityAPIKey,
-  openrouterAPIKey,
-  useAzureOpenai,
-  onOpenaiAPIKeyChange,
-  onOpenaiOrgIDChange,
-  onAzureOpenaiAPIKeyChange,
-  onAzureOpenaiEndpointChange,
-  onAzureOpenai35TurboIDChange,
-  onAzureOpenai45TurboIDChange,
-  onAzureOpenai45VisionIDChange,
-  onAzureOpenaiEmbeddingsIDChange,
-  onAnthropicAPIKeyChange,
+  // mistralAPIKey,
+  // groqAPIKey,
+  // perplexityAPIKey,
+  // openrouterAPIKey,
+  // useAzureOpenai,
+  userRole,
+  // onOpenaiAPIKeyChange,
+  // onOpenaiOrgIDChange,
+  // onAzureOpenaiAPIKeyChange,
+  // onAzureOpenaiEndpointChange,
+  // onAzureOpenai35TurboIDChange,
+  // onAzureOpenai45TurboIDChange,
+  // onAzureOpenai45VisionIDChange,
+  // onAzureOpenaiEmbeddingsIDChange,
+  // onAnthropicAPIKeyChange,
   onGoogleGeminiAPIKeyChange,
-  onMistralAPIKeyChange,
-  onGroqAPIKeyChange,
-  onPerplexityAPIKeyChange,
-  onUseAzureOpenaiChange,
-  onOpenrouterAPIKeyChange
+  // onMistralAPIKeyChange,
+  // onGroqAPIKeyChange,
+  // onPerplexityAPIKeyChange,
+  // onUseAzureOpenaiChange,
+  // onOpenrouterAPIKeyChange
+  onUserRoleChange
 }) => {
   return (
     <>
-      <div className="mt-5 space-y-2">
+      {/* <div className="mt-5 space-y-2">
         <Label className="flex items-center">
           <div>
             {useAzureOpenai ? "Azure OpenAI API Key" : "OpenAI API Key"}
@@ -183,7 +187,7 @@ export const APIStep: FC<APIStepProps> = ({
           value={anthropicAPIKey}
           onChange={e => onAnthropicAPIKeyChange(e.target.value)}
         />
-      </div>
+      </div> */}
 
       <div className="space-y-1">
         <Label>Google Gemini API Key</Label>
@@ -195,8 +199,19 @@ export const APIStep: FC<APIStepProps> = ({
           onChange={e => onGoogleGeminiAPIKeyChange(e.target.value)}
         />
       </div>
-
       <div className="space-y-1">
+        <Label>Select Your Role</Label>
+        <select
+          className="w-full p-2 border rounded"
+          onChange={e => onUserRoleChange(e.target.value)}
+          value={userRole}
+        >
+          <option value="Korea">Korea</option>
+          <option value="China">China</option>
+          <option value="Global">Global</option>
+        </select>
+      </div>
+      {/* <div className="space-y-1">
         <Label>Mistral API Key</Label>
 
         <Input
@@ -237,7 +252,7 @@ export const APIStep: FC<APIStepProps> = ({
           value={openrouterAPIKey}
           onChange={e => onOpenrouterAPIKeyChange(e.target.value)}
         />
-      </div>
+      </div> */}
     </>
   )
 }

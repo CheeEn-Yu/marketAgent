@@ -123,6 +123,9 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
   const [selectedTools, setSelectedTools] = useState<Tables<"tools">[]>([])
   const [toolInUse, setToolInUse] = useState<string>("none")
 
+  // CHAT MODE
+  const [summarizationMode, setSummarizationMode] = useState<boolean>(false)
+
   useEffect(() => {
     ;(async () => {
       const profile = await fetchStartingData()
@@ -322,7 +325,11 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
         selectedTools,
         setSelectedTools,
         toolInUse,
-        setToolInUse
+        setToolInUse,
+
+        // CHAT MODE
+        summarizationMode,
+        setSummarizationMode
       }}
     >
       {children}

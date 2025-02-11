@@ -20,6 +20,7 @@ import { useChatHandler } from "./chat-hooks/use-chat-handler"
 import { useChatHistoryHandler } from "./chat-hooks/use-chat-history"
 import { usePromptAndCommand } from "./chat-hooks/use-prompt-and-command"
 import { useSelectFileHandler } from "./chat-hooks/use-select-file-handler"
+import Switch from 'react-switch'
 
 interface ChatInputProps {}
 
@@ -54,7 +55,9 @@ export const ChatInput: FC<ChatInputProps> = ({}) => {
     chatSettings,
     selectedTools,
     setSelectedTools,
-    assistantImages
+    assistantImages,
+    summarizationMode,
+    setSummarizationMode
   } = useContext(ChatbotUIContext)
 
   const {
@@ -162,6 +165,9 @@ export const ChatInput: FC<ChatInputProps> = ({}) => {
     }
   }
 
+  // FIXME: remove console.log
+  console.log("summarizationMode", summarizationMode)
+
   return (
     <>
       <div className="flex flex-col flex-wrap justify-center gap-2">
@@ -235,6 +241,16 @@ export const ChatInput: FC<ChatInputProps> = ({}) => {
             accept={filesToAccept}
           />
         </>
+
+        <Switch
+          className="absolute bottom-[12px] left-12"
+          checked={summarizationMode}
+          onChange={() => setSummarizationMode(!summarizationMode)}
+          offColor="#888"
+          onColor="#0f0"
+          uncheckedIcon={false}
+          checkedIcon={false}
+        />
 
         <TextareaAutosize
           textareaRef={chatInputRef}

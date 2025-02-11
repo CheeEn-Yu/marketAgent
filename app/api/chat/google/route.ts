@@ -9,6 +9,22 @@ import {
 
 // import { VertexAI } from "@google-cloud/vertexai"
 // export const runtime = "edge"
+const project = PROJECT_ID;
+const location = 'us-central1';
+const textModel =  'gemini-1.5-flash';
+const vertexAI = new VertexAI({project: project, location: location});
+// Instantiate Gemini models
+const generativeModel = vertexAI.getGenerativeModel({
+    model: textModel,
+    // The following parameters are optional
+    // They can also be passed to individual content generation requests
+    safetySettings: [{category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE}],
+    generationConfig: {maxOutputTokens: 256},
+    systemInstruction: {
+      role: 'system',
+      parts: [{"text": `you are a helpful customer service agent.`}]
+    },
+});
 
 export async function POST(request: Request) {
   const json = await request.json()
@@ -16,23 +32,8 @@ export async function POST(request: Request) {
     chatSettings: ChatSettings
     messages: any[]
   }
-  
+
   try {
-    const project = PROJECT_ID;
-    const location = 'us-central1';
-    const vertexAI = new VertexAI({project: project, location: location});
-    // Instantiate Gemini models
-    const generativeModel = vertexAI.getGenerativeModel({
-        model: chatSettings.model,
-        // The following parameters are optional
-        // They can also be passed to individual content generation requests
-        safetySettings: [{category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE}],
-        generationConfig: {maxOutputTokens: chatSettings.contextLength},
-        systemInstruction: {
-          role: 'system',
-          parts: [{"text": chatSettings.prompt}]
-        },
-    });
     const lastMessage = messages.pop()
     const prompt = lastMessage.parts  // adjust if parts is not exactly a string
     

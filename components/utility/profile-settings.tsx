@@ -291,6 +291,9 @@ export const ProfileSettings: FC<ProfileSettingsProps> = ({}) => {
     }
   }
 
+  // FIXME: Remove this after testing
+  // console.log("user role from profile", profile?.userrole)
+
   if (!profile) return null
 
   return (
@@ -319,7 +322,7 @@ export const ProfileSettings: FC<ProfileSettingsProps> = ({}) => {
         <div className="grow overflow-auto">
           <SheetHeader>
             <SheetTitle className="flex items-center justify-between space-x-2">
-              <div>User Settings</div>
+              <div>User Settings22</div>
 
               <Button
                 tabIndex={-1}
