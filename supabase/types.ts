@@ -989,6 +989,7 @@ export type Database = {
           use_azure_openai: boolean
           user_id: string
           username: string
+          userrole: string | null
         }
         Insert: {
           anthropic_api_key?: string | null
@@ -1017,6 +1018,7 @@ export type Database = {
           use_azure_openai: boolean
           user_id: string
           username: string
+          userrole?: string | null
         }
         Update: {
           anthropic_api_key?: string | null
@@ -1045,6 +1047,7 @@ export type Database = {
           use_azure_openai?: boolean
           user_id?: string
           username?: string
+          userrole?: string | null
         }
         Relationships: []
       }

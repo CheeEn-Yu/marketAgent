@@ -69,6 +69,9 @@ export const ToolPicker: FC<ToolPickerProps> = ({}) => {
       }
     }
 
+  // FIXME: remove console.log
+  // console.log("filteredTools", filteredTools)
+
   return (
     <>
       {isToolPickerOpen && (
