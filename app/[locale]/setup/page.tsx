@@ -159,7 +159,7 @@ export default function SetupPage() {
 
   const renderStep = (stepNum: number) => {
     // FIXME: Remove this console.log
-    console.log("user role", userRole)
+    // console.log("user role", userRole)
     switch (stepNum) {
       // Profile Step
       case 1:

@@ -166,7 +166,16 @@ export const ChatInput: FC<ChatInputProps> = ({}) => {
   }
 
   // FIXME: remove console.log
-  console.log("summarizationMode", summarizationMode)
+  // console.log("summarizationMode", summarizationMode)
+
+  const toggleSummarizationMode = () => {
+    setSummarizationMode(!summarizationMode)
+    if (!summarizationMode) {
+      handleInputChange("Summarize: " + userInput)
+    } else {
+      handleInputChange(userInput.replace(/^Summarize:\s*/, ""))
+    }
+  }
 
   return (
     <>
@@ -242,15 +251,6 @@ export const ChatInput: FC<ChatInputProps> = ({}) => {
           />
         </>
 
-        <Switch
-          className="absolute bottom-[12px] left-12"
-          checked={summarizationMode}
-          onChange={() => setSummarizationMode(!summarizationMode)}
-          offColor="#888"
-          onColor="#0f0"
-          uncheckedIcon={false}
-          checkedIcon={false}
-        />
 
         <TextareaAutosize
           textareaRef={chatInputRef}
@@ -291,6 +291,15 @@ export const ChatInput: FC<ChatInputProps> = ({}) => {
             />
           )}
         </div>
+      </div>
+      
+      <div className="relative mt-3 flex min-h-[60px] w-full items-center justify-center">
+        <button
+          className="flex items-center justify-center rounded-full bg-gray-200 px-4 py-2 text-black"
+          onClick={toggleSummarizationMode}
+        >
+          {summarizationMode ? "Disable Summarization" : "Enable Summarization"}
+        </button>
       </div>
     </>
   )
