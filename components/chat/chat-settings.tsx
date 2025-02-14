@@ -57,9 +57,9 @@ export const ChatSettings: FC<ChatSettingsProps> = ({}) => {
       platformLink: "",
       imageInput: false
     })),
-    ...availableHostedModels,
-    ...availableLocalModels,
-    ...availableOpenRouterModels
+    ...availableHostedModels
+    // ...availableLocalModels,
+    // ...availableOpenRouterModels
   ]
 
   const fullModel = allModels.find(llm => llm.modelId === chatSettings.model)

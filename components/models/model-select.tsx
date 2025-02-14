@@ -60,8 +60,8 @@ export const ModelSelect: FC<ModelSelectProps> = ({
       imageInput: false
     })),
     ...availableHostedModels,
-    ...availableLocalModels,
-    ...availableOpenRouterModels
+    // ...availableLocalModels,
+    // ...availableOpenRouterModels
   ]
 
   const groupedModels = allModels.reduce<Record<string, LLM[]>>(

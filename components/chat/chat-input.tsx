@@ -20,6 +20,7 @@ import { useChatHandler } from "./chat-hooks/use-chat-handler"
 import { useChatHistoryHandler } from "./chat-hooks/use-chat-history"
 import { usePromptAndCommand } from "./chat-hooks/use-prompt-and-command"
 import { useSelectFileHandler } from "./chat-hooks/use-select-file-handler"
+import Switch from 'react-switch'
 
 interface ChatInputProps {}
 
@@ -54,7 +55,9 @@ export const ChatInput: FC<ChatInputProps> = ({}) => {
     chatSettings,
     selectedTools,
     setSelectedTools,
-    assistantImages
+    assistantImages,
+    summarizationMode,
+    setSummarizationMode
   } = useContext(ChatbotUIContext)
 
   const {
@@ -162,6 +165,18 @@ export const ChatInput: FC<ChatInputProps> = ({}) => {
     }
   }
 
+  // FIXME: remove console.log
+  // console.log("summarizationMode", summarizationMode)
+
+  const toggleSummarizationMode = () => {
+    setSummarizationMode(!summarizationMode)
+    if (!summarizationMode) {
+      handleInputChange("Summarize: " + userInput)
+    } else {
+      handleInputChange(userInput.replace(/^Summarize:\s*/, ""))
+    }
+  }
+
   return (
     <>
       <div className="flex flex-col flex-wrap justify-center gap-2">
@@ -236,6 +251,7 @@ export const ChatInput: FC<ChatInputProps> = ({}) => {
           />
         </>
 
+
         <TextareaAutosize
           textareaRef={chatInputRef}
           className="ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring text-md flex w-full resize-none rounded-md border-none bg-transparent px-14 py-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
@@ -275,6 +291,15 @@ export const ChatInput: FC<ChatInputProps> = ({}) => {
             />
           )}
         </div>
+      </div>
+      
+      <div className="relative mt-3 flex min-h-[60px] w-full items-center justify-center">
+        <button
+          className="flex items-center justify-center rounded-full bg-gray-200 px-4 py-2 text-black"
+          onClick={toggleSummarizationMode}
+        >
+          {summarizationMode ? "Disable Summarization" : "Enable Summarization"}
+        </button>
       </div>
     </>
   )

@@ -88,12 +88,6 @@ Open a terminal in the root directory of your local Chatbot UI repository and ru
 npm install
 ```
 
-To run vertex AI, run:
-```bash
-npm install @google-cloud/vertexai
-```
-reference: https://cloud.google.com/vertex-ai/generative-ai/docs/reference/nodejs/latest#get-streamed-chat-responses
-
 ### 3. Install Supabase & Run Locally
 
 #### Why Supabase?

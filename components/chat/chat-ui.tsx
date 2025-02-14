@@ -18,6 +18,7 @@ import { ChatInput } from "./chat-input"
 import { ChatMessages } from "./chat-messages"
 import { ChatScrollButtons } from "./chat-scroll-buttons"
 import { ChatSecondaryButtons } from "./chat-secondary-buttons"
+import TestImage from "../messages/message-test"
 
 interface ChatUIProps {}
 
@@ -111,6 +112,7 @@ export const ChatUI: FC<ChatUIProps> = ({}) => {
     )
 
     const images: MessageImage[] = await Promise.all(imagePromises.flat())
+    // TODO: set chat images: get images from db storage
     setChatImages(images)
 
     const messageFileItemPromises = fetchedMessages.map(
