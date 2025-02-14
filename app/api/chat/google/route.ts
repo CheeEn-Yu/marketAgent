@@ -27,7 +27,7 @@ export async function POST(request: Request) {
     // Execute Python script
     const messagesJson = JSON.stringify(messages)
     const pythonProcess = spawn("python", [
-      "python_backend/rag.py",
+      "python_backend/chat.py",
       "--prompt",
       prompt[0].text,
       "--history",
