@@ -13,6 +13,10 @@ export const ChatMessages: FC<ChatMessagesProps> = ({}) => {
 
   const [editingMessage, setEditingMessage] = useState<Tables<"messages">>()
 
+  // FIXME: remove console
+  console.log("rendered chatMessages")
+  console.log(chatMessages)
+
   return chatMessages
     .sort((a, b) => a.message.sequence_number - b.message.sequence_number)
     .map((chatMessage, index, array) => {

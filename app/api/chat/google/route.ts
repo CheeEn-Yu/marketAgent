@@ -27,11 +27,17 @@ const generativeModel = vertexAI.getGenerativeModel({
 });
 
 export async function POST(request: Request) {
+  
   const json = await request.json()
   const { chatSettings, messages } = json as {
     chatSettings: ChatSettings
     messages: any[]
   }
+  
+  console.log("POST request received")
+  console.log(request)
+  console.log("json:")
+  console.log(json)
 
   try {
     const lastMessage = messages.pop()

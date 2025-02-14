@@ -194,12 +194,15 @@ function adaptSingleMessageForGoogleGemini(message: any) {
     rawParts = message.content
   }
 
+  console.log("rawParts")
+  console.log(rawParts)
   for(let i = 0; i < rawParts.length; i++) {
     let rawPart = rawParts[i]
 
     if(rawPart.type == 'text') {
       adaptedParts.push({text: rawPart.text})
-    } else if(rawPart.type === 'image_url') {
+    } 
+    else if(rawPart.type === 'image_url') {
       adaptedParts.push({
         inlineData: {
           data: getBase64FromDataURL(rawPart.image_url.url),
@@ -207,6 +210,7 @@ function adaptSingleMessageForGoogleGemini(message: any) {
         }
       })
     }
+    // disable image for gemini
   }
 
   let role = 'user'
