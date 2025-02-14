@@ -423,7 +423,7 @@ export const Message: FC<MessageProps> = ({
           {/* FIXME: remove test image */}
 
           {/* DELETE */}
-          <TestImage />
+          {/* <TestImage /> */}
           {/* <Image
             key="1"
             className="cursor-pointer rounded hover:opacity-50"
