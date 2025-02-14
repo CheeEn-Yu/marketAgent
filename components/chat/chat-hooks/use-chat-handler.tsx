@@ -279,7 +279,7 @@ export const useChatHandler = () => {
 
       if (selectedTools.length > 0) {
         // FIXME: remove console.log
-        console.log("selectedTools", selectedTools)
+        // console.log("selectedTools", selectedTools)
 
         setToolInUse("Tools")
 
@@ -288,7 +288,7 @@ export const useChatHandler = () => {
           profile!,
           chatImages
         )
-        console.log("chatImages", chatImages)
+        // console.log("chatImages", chatImages)
 
         const response = await fetch("/api/chat/tools", {
           method: "POST",
@@ -298,7 +298,8 @@ export const useChatHandler = () => {
           body: JSON.stringify({
             chatSettings: payload.chatSettings,
             messages: formattedMessages,
-            selectedTools
+            selectedTools,
+            userRole: profile!.userrole
           })
         })
 
@@ -318,7 +319,7 @@ export const useChatHandler = () => {
       } else {
         if (modelData!.provider === "ollama") {
           //FIXME: remove console.log
-          console.log("local model")
+          // console.log("local model")
 
           generatedText = await handleLocalChat(
             payload,
@@ -334,7 +335,7 @@ export const useChatHandler = () => {
           )
         } else {
           //FIXME: remove console.log
-          console.log("hosted model")
+          // console.log("hosted model")
 
           generatedText = await handleHostedChat(
             payload,
@@ -351,14 +352,14 @@ export const useChatHandler = () => {
             setToolInUse
           )
           // FIXME: remove console.log
-          console.log("generatedText", generatedText)
+          // console.log("generatedText", generatedText)
         }
       }
 
       // db call
       if (!currentChat) {
         // FIXME: remove console.log
-        console.log("create chat")
+        // console.log("create chat")
         currentChat = await handleCreateChat(
           chatSettings!,
           profile!,
@@ -372,7 +373,7 @@ export const useChatHandler = () => {
         )
       } else {
         // FIXME: remove console.log
-        console.log("update chat")
+        // console.log("update chat")
         const updatedChat = await updateChat(currentChat.id, {
           updated_at: new Date().toISOString()
         })
