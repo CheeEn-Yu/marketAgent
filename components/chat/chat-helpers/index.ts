@@ -208,9 +208,12 @@ export const handleHostedChat = async (
 
   let draftMessages = await buildFinalMessages(payload, profile, chatImages)
 
-  let formattedMessages : any[] = []
+  let formattedMessages: any[] = []
   if (provider === "google") {
-    formattedMessages = await adaptMessagesForGoogleGemini(payload, draftMessages)
+    formattedMessages = await adaptMessagesForGoogleGemini(
+      payload,
+      draftMessages
+    )
   } else {
     formattedMessages = draftMessages
   }
@@ -416,7 +419,6 @@ export const handleCreateMessages = async (
   console.log("retrievedFileItems", retrievedFileItems)
   console.log("selectedAssistant", selectedAssistant)
 
-
   const finalUserMessage: TablesInsert<"messages"> = {
     chat_id: currentChat.id,
     assistant_id: null,
@@ -465,34 +467,38 @@ export const handleCreateMessages = async (
 
     // Upload each image (stored in newMessageImages) for the user message to message_images bucket
     const uploadPromises = newMessageImages
-    .filter(obj => obj.file !== null)
-    .map(obj => {
-      let filePath = `${profile.user_id}/${currentChat.id}/${
-        createdMessages[0].id
-      }/${uuidv4()}`
-      
-      return uploadMessageImage(filePath, obj.file as File).catch(error => {
-        console.error(`Failed to upload image at ${filePath}:`, error)
-        return null
-      })
-    })
-
-    // TODO: upload assistant images
-    const assistantUploadPromises = assistantGenerateImages
       .filter(obj => obj.file !== null)
       .map(obj => {
         let filePath = `${profile.user_id}/${currentChat.id}/${
-          createdMessages[1].id
+          createdMessages[0].id
         }/${uuidv4()}`
-        
+
         return uploadMessageImage(filePath, obj.file as File).catch(error => {
           console.error(`Failed to upload image at ${filePath}:`, error)
           return null
         })
       })
 
-    const paths = (await Promise.all(uploadPromises)).filter(Boolean) as string[]
-    const assistantPaths = (await Promise.all(assistantUploadPromises)).filter(Boolean) as string[]
+    // TODO: upload assistant images
+    // const assistantUploadPromises = assistantGenerateImages
+    //   .filter(obj => obj.file !== null)
+    //   .map(obj => {
+    //     let filePath = `${profile.user_id}/${currentChat.id}/${
+    //       createdMessages[1].id
+    //     }/${uuidv4()}`
+
+    //     return uploadMessageImage(filePath, obj.file as File).catch(error => {
+    //       console.error(`Failed to upload image at ${filePath}:`, error)
+    //       return null
+    //     })
+    //   })
+
+    const paths = (await Promise.all(uploadPromises)).filter(
+      Boolean
+    ) as string[]
+    // const assistantPaths = (await Promise.all(assistantUploadPromises)).filter(
+    //   Boolean
+    // ) as string[]
     // console.log("paths", paths)
     // console.log("assistantPaths", assistantPaths)
 
@@ -502,12 +508,12 @@ export const handleCreateMessages = async (
         ...obj,
         messageId: createdMessages[0].id,
         path: paths[index]
-      })),
-      ...assistantGenerateImages.map((obj, index) => ({
-        ...obj,
-        messageId: createdMessages[1].id,
-        path: assistantPaths[index]
       }))
+      // ...assistantGenerateImages.map((obj, index) => ({
+      //   ...obj,
+      //   messageId: createdMessages[1].id,
+      //   path: assistantPaths[index]
+      // }))
     ])
 
     const updatedMessage = await updateMessage(createdMessages[0].id, {
@@ -516,16 +522,16 @@ export const handleCreateMessages = async (
     })
 
     // 更新 assistant message 的 image_paths
-    const updatedAssistantMessage = await updateMessage(createdMessages[1].id, {
-      ...createdMessages[1],
-      // image_paths: assistantPaths
-      // TODO: correct path
-      image_paths: ["898989"]
-    })
+    // const updatedAssistantMessage = await updateMessage(createdMessages[1].id, {
+    //   ...createdMessages[1],
+    //   // image_paths: assistantPaths
+    //   // TODO: correct path
+    //   image_paths: ["898989"]
+    // })
 
     console.log("updatedMessage", updatedMessage)
-    console.log("assistantPaths", assistantPaths)
-    console.log("updatedAssistantMessage", updatedAssistantMessage)
+    // console.log("assistantPaths", assistantPaths)
+    // console.log("updatedAssistantMessage", updatedAssistantMessage)
 
     const createdMessageFileItems = await createMessageFileItems(
       retrievedFileItems.map(fileItem => {

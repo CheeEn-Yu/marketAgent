@@ -8,7 +8,6 @@ from vertexai.preview import rag
 from vertexai.generative_models import (
     Content,
     FunctionDeclaration,
-    GenerationConfig,
     GenerativeModel,
     Part,
     Tool,
@@ -22,7 +21,7 @@ aiplatform.init(project=PROJECT_ID, location=REGION)
 # 設定標準輸出編碼（支援中文輸出）
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
-def run_rag_pipeline(args, history, existing_corpus= f"projects/901172456759/locations/us-central1/ragCorpora/4467570830351532032"):
+def run_rag_pipeline(prompt, history, model_name="gemini-1.5-pro", existing_corpus= f"projects/901172456759/locations/us-central1/ragCorpora/4467570830351532032"):
     """
     使用已部署的 Corpus 建立檢索工具、整合 RAG 模型並發送查詢。
     參數:
@@ -54,11 +53,7 @@ def run_rag_pipeline(args, history, existing_corpus= f"projects/901172456759/loc
     # Step 7: 建立 RAG 模型，並將檢索工具加入
     try:
         rag_model = GenerativeModel(
-            model_name=args.model_name,
-            generation_config=GenerationConfig(
-                temperature=args.temperature,
-                max_output_tokens=args.max_output_tokens,
-            ),
+            model_name=model_name,
             tools=[rag_retrieval_tool]
         )
     except Exception as e:
@@ -67,7 +62,7 @@ def run_rag_pipeline(args, history, existing_corpus= f"projects/901172456759/loc
     
     try:
         chat = rag_model.start_chat(history=history)
-        result = chat.send_message(args.prompt)
+        result = chat.send_message(prompt)
         print(result.candidates[0].content.parts[0].text)
     except Exception as e:
         print("發送查詢並生成回答時發生錯誤:", e)
@@ -76,8 +71,6 @@ def main():
     parser = argparse.ArgumentParser(description="Generate content using a generative model.")
     parser.add_argument("--prompt", type=str, default="Tell me how to win a hackathon", help="The prompt to send to the model.")
     parser.add_argument("--model_name", type=str, default="gemini-1.5-flash", help="The name of the generative model to use.")
-    parser.add_argument("--max_output_tokens", type=int, default=2048, help="max output tokens of the generative model.")
-    parser.add_argument("--temperature", type=float, default=0.5, help="temperature of the generative model.")
     parser.add_argument("--history", type=str, help="The name of the generative model to use.")
     
     args = parser.parse_args()
@@ -90,7 +83,7 @@ def main():
         # Create Content object with role and parts
         content = Content(role=item['role'], parts=parts)
         content_list.append(content)
-    run_rag_pipeline(args, content_list)
+    run_rag_pipeline(args.prompt, content_list, model_name=args.model_name)
 
 if __name__ == "__main__":
     main()

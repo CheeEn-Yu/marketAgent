@@ -385,7 +385,7 @@ export const useChatHandler = () => {
           return updatedChats
         })
       }
-      
+
       const assistantGenerateImages: MessageImage[] = []
 
       // // TODO: remove this test image
@@ -410,7 +410,6 @@ export const useChatHandler = () => {
 
       // assistantGenerateImages.push(testImage)
       // newMessageImages.push(testImage)
-      
 
       await handleCreateMessages(
         chatMessages,

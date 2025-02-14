@@ -22,10 +22,10 @@ export type GoogleLLMID =
   | "gemini-2.0-pro-exp-02-05"
   | "gemini-1.5-flash"
   | "gemini-1.5-pro"
-  // | "gemini-pro" // Gemini Pro
-  // | "gemini-pro-vision" // Gemini Pro Vision
-  // | "gemini-1.5-pro-latest" // Gemini 1.5 Pro
-  // | "gemini-1.5-flash" // Gemini 1.5 Flash
+// | "gemini-pro" // Gemini Pro
+// | "gemini-pro-vision" // Gemini Pro Vision
+// | "gemini-1.5-pro-latest" // Gemini 1.5 Pro
+// | "gemini-1.5-flash" // Gemini 1.5 Flash
 
 // Anthropic Models
 export type AnthropicLLMID =

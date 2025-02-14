@@ -23,10 +23,10 @@ import { TextareaAutosize } from "../ui/textarea-autosize"
 import { WithTooltip } from "../ui/with-tooltip"
 import { MessageActions } from "./message-actions"
 import { MessageMarkdown } from "./message-markdown"
-import { TestImage } from "./message-test"
+// import { TestImage } from "./message-test"
 
 // FIXME: remove test image
-import testImageSrc from "/Users/wei-chinwang/NTU/TSMC_hack/sn_17.jpg"
+// import testImageSrc from "/Users/wei-chinwang/NTU/TSMC_hack/sn_17.jpg"
 
 const ICON_SIZE = 32
 
@@ -392,8 +392,8 @@ export const Message: FC<MessageProps> = ({
         {/* Message images */}
         <div className="mt-3 flex flex-wrap gap-2">
           {message.image_paths.map((path, index) => {
-            const item = chatImages.find(image => image.path === path )
-            
+            const item = chatImages.find(image => image.path === path)
+
             console.log("item", item)
 
             return (
