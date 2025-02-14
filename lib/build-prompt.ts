@@ -172,6 +172,9 @@ export async function buildFinalMessages(
     }
   }
 
+  console.log("finalMessages")
+  console.log(finalMessages)
+
   return finalMessages
 }
 
@@ -193,8 +196,8 @@ function adaptSingleMessageForGoogleGemini(message: any) {
     rawParts = message.content
   }
 
-  console.log("rawParts")
-  console.log(rawParts)
+  // console.log("rawParts")
+  // console.log(rawParts)
   for (let i = 0; i < rawParts.length; i++) {
     let rawPart = rawParts[i]
 

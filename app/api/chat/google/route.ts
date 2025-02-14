@@ -3,9 +3,10 @@ import { spawn } from "child_process"
 
 export async function POST(request: Request) {
   const json = await request.json()
-  const { chatSettings, messages } = json as {
+  const { chatSettings, messages, userRole } = json as {
     chatSettings: ChatSettings
     messages: any[]
+    userrole: string
   }
 
   try {
@@ -14,17 +15,13 @@ export async function POST(request: Request) {
     // Execute Python script
     const messagesJson = JSON.stringify(messages)
     const pythonProcess = spawn("python", [
-      "python_code/rag.py",
+      "python_backend/rag_v2.py",
       "--prompt",
       prompt[0].text,
       "--history",
       messagesJson,
-      "--model_name",
-      chatSettings.model,
-      "--temperature",
-      chatSettings.temperature,
-      "--max_output_tokens",
-      chatSettings.contextLength
+      "--user_role",
+      userRole
     ])
     let pythonData = ""
 

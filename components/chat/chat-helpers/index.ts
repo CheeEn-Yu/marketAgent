@@ -224,7 +224,8 @@ export const handleHostedChat = async (
   const requestBody = {
     chatSettings: payload.chatSettings,
     messages: formattedMessages,
-    customModelId: provider === "custom" ? modelData.hostedId : ""
+    customModelId: provider === "custom" ? modelData.hostedId : "",
+    userRole: profile?.userrole
   }
 
   const response = await fetchChatResponse(
@@ -406,18 +407,18 @@ export const handleCreateMessages = async (
   selectedAssistant: Tables<"assistants"> | null
 ) => {
   // FIXME: remove console.log
-  console.log("[handleCreateMessages]")
-  console.log("chatMessages", chatMessages)
-  console.log("currentChat", currentChat)
-  console.log("profile", profile)
-  console.log("modelData", modelData)
-  console.log("messageContent", messageContent)
-  console.log("generatedText", generatedText)
-  console.log("newMessageImages", newMessageImages)
-  console.log("assistantGenerateImages", assistantGenerateImages)
-  console.log("isRegeneration", isRegeneration)
-  console.log("retrievedFileItems", retrievedFileItems)
-  console.log("selectedAssistant", selectedAssistant)
+  // console.log("[handleCreateMessages]")
+  // console.log("chatMessages", chatMessages)
+  // console.log("currentChat", currentChat)
+  // console.log("profile", profile)
+  // console.log("modelData", modelData)
+  // console.log("messageContent", messageContent)
+  // console.log("generatedText", generatedText)
+  // console.log("newMessageImages", newMessageImages)
+  // console.log("assistantGenerateImages", assistantGenerateImages)
+  // console.log("isRegeneration", isRegeneration)
+  // console.log("retrievedFileItems", retrievedFileItems)
+  // console.log("selectedAssistant", selectedAssistant)
 
   const finalUserMessage: TablesInsert<"messages"> = {
     chat_id: currentChat.id,
@@ -463,7 +464,7 @@ export const handleCreateMessages = async (
     ])
 
     // FIXME: remove console.log
-    console.log("createdMessages", createdMessages)
+    // console.log("createdMessages", createdMessages)
 
     // Upload each image (stored in newMessageImages) for the user message to message_images bucket
     const uploadPromises = newMessageImages
