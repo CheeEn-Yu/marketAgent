@@ -23,6 +23,10 @@ import { TextareaAutosize } from "../ui/textarea-autosize"
 import { WithTooltip } from "../ui/with-tooltip"
 import { MessageActions } from "./message-actions"
 import { MessageMarkdown } from "./message-markdown"
+import { TestImage } from "./message-test"
+
+// FIXME: remove test image
+import testImageSrc from "/Users/wei-chinwang/NTU/TSMC_hack/sn_17.jpg"
 
 const ICON_SIZE = 32
 
@@ -61,6 +65,11 @@ export const Message: FC<MessageProps> = ({
     files,
     models
   } = useContext(ChatbotUIContext)
+
+  // FIXME: remove console
+  // if (chatImages.length > 0) {
+  //   console.log(chatImages)
+  // }
 
   const { handleSendMessage } = useChatHandler()
 
@@ -202,6 +211,7 @@ export const Message: FC<MessageProps> = ({
           />
         </div>
         <div className="space-y-3">
+          {/* User + asistant info */}
           {message.role === "system" ? (
             <div className="flex items-center space-x-4">
               <IconPencil
@@ -266,6 +276,8 @@ export const Message: FC<MessageProps> = ({
               </div>
             </div>
           )}
+
+          {/* Message text */}
           {!firstTokenReceived &&
           isGenerating &&
           isLast &&
@@ -309,6 +321,7 @@ export const Message: FC<MessageProps> = ({
           )}
         </div>
 
+        {/* Message files */}
         {fileItems.length > 0 && (
           <div className="border-primary mt-6 border-t pt-4 font-bold">
             {!viewSources ? (
@@ -376,9 +389,12 @@ export const Message: FC<MessageProps> = ({
           </div>
         )}
 
+        {/* Message images */}
         <div className="mt-3 flex flex-wrap gap-2">
           {message.image_paths.map((path, index) => {
-            const item = chatImages.find(image => image.path === path)
+            const item = chatImages.find(image => image.path === path )
+            
+            console.log("item", item)
 
             return (
               <Image
@@ -403,7 +419,34 @@ export const Message: FC<MessageProps> = ({
               />
             )
           })}
+
+          {/* FIXME: remove test image */}
+
+          {/* DELETE */}
+          <TestImage />
+          {/* <Image
+            key="1"
+            className="cursor-pointer rounded hover:opacity-50"
+            src={testImageSrc}
+            alt="test image"
+            width={300}
+            height={300}
+            onClick={() => {
+              setSelectedImage({
+                messageId: message.id,
+                path: "",
+                base64: "",
+                url: "",
+                file: null
+              })
+
+              setShowImagePreview(true)
+            }}
+            loading="lazy"
+          /> */}
         </div>
+
+        {/* Message Editing */}
         {isEditing && (
           <div className="mt-4 flex justify-center space-x-2">
             <Button size="sm" onClick={handleSendEdit}>
@@ -417,6 +460,7 @@ export const Message: FC<MessageProps> = ({
         )}
       </div>
 
+      {/* Preview */}
       {showImagePreview && selectedImage && (
         <FilePreview
           type="image"

@@ -21,6 +21,7 @@ import {
   processResponse,
   validateChatSettings
 } from "../chat-helpers"
+import { MessageImage } from "@/types"
 
 export const useChatHandler = () => {
   const router = useRouter()
@@ -188,6 +189,7 @@ export const useChatHandler = () => {
     }
   }
 
+  // TODO: send message see image sending flow
   const handleSendMessage = async (
     messageContent: string,
     chatMessages: ChatMessage[],
@@ -230,6 +232,9 @@ export const useChatHandler = () => {
       let currentChat = selectedChat ? { ...selectedChat } : null
 
       const b64Images = newMessageImages.map(image => image.base64)
+      // FIXME: remove console.log
+      // console.log("b64Images", b64Images)
+      // console.log("newMessageImages", newMessageImages)
 
       let retrievedFileItems: Tables<"file_items">[] = []
 
@@ -273,6 +278,9 @@ export const useChatHandler = () => {
       let generatedText = ""
 
       if (selectedTools.length > 0) {
+        // FIXME: remove console.log
+        console.log("selectedTools", selectedTools)
+
         setToolInUse("Tools")
 
         const formattedMessages = await buildFinalMessages(
@@ -280,6 +288,7 @@ export const useChatHandler = () => {
           profile!,
           chatImages
         )
+        console.log("chatImages", chatImages)
 
         const response = await fetch("/api/chat/tools", {
           method: "POST",
@@ -308,6 +317,9 @@ export const useChatHandler = () => {
         )
       } else {
         if (modelData!.provider === "ollama") {
+          //FIXME: remove console.log
+          console.log("local model")
+
           generatedText = await handleLocalChat(
             payload,
             profile!,
@@ -321,6 +333,9 @@ export const useChatHandler = () => {
             setToolInUse
           )
         } else {
+          //FIXME: remove console.log
+          console.log("hosted model")
+
           generatedText = await handleHostedChat(
             payload,
             profile!,
@@ -335,10 +350,15 @@ export const useChatHandler = () => {
             setChatMessages,
             setToolInUse
           )
+          // FIXME: remove console.log
+          console.log("generatedText", generatedText)
         }
       }
 
+      // db call
       if (!currentChat) {
+        // FIXME: remove console.log
+        console.log("create chat")
         currentChat = await handleCreateChat(
           chatSettings!,
           profile!,
@@ -351,6 +371,8 @@ export const useChatHandler = () => {
           setChatFiles
         )
       } else {
+        // FIXME: remove console.log
+        console.log("update chat")
         const updatedChat = await updateChat(currentChat.id, {
           updated_at: new Date().toISOString()
         })
@@ -363,6 +385,32 @@ export const useChatHandler = () => {
           return updatedChats
         })
       }
+      
+      const assistantGenerateImages: MessageImage[] = []
+
+      // // TODO: remove this test image
+      // // 生成一張全白的測試圖片
+      // const canvas = document.createElement('canvas')
+      // canvas.width = 100
+      // canvas.height = 100
+      // const context = canvas.getContext('2d')
+      // if (context) {
+      //   context.fillStyle = 'white'
+      //   context.fillRect(0, 0, canvas.width, canvas.height)
+      // }
+
+      // const base64Image = canvas.toDataURL('image/png')
+      // const testImage: MessageImage = {
+      //   messageId: 'test',
+      //   path: '898989',
+      //   base64: base64Image,
+      //   url: '',
+      //   file: null
+      // }
+
+      // assistantGenerateImages.push(testImage)
+      // newMessageImages.push(testImage)
+      
 
       await handleCreateMessages(
         chatMessages,
@@ -372,6 +420,7 @@ export const useChatHandler = () => {
         messageContent,
         generatedText,
         newMessageImages,
+        assistantGenerateImages,
         isRegeneration,
         retrievedFileItems,
         setChatMessages,

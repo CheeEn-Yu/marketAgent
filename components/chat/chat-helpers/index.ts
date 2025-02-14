@@ -392,6 +392,7 @@ export const handleCreateMessages = async (
   messageContent: string,
   generatedText: string,
   newMessageImages: MessageImage[],
+  assistantGenerateImages: MessageImage[],
   isRegeneration: boolean,
   retrievedFileItems: Tables<"file_items">[],
   setChatMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>,
@@ -401,6 +402,21 @@ export const handleCreateMessages = async (
   setChatImages: React.Dispatch<React.SetStateAction<MessageImage[]>>,
   selectedAssistant: Tables<"assistants"> | null
 ) => {
+  // FIXME: remove console.log
+  console.log("[handleCreateMessages]")
+  console.log("chatMessages", chatMessages)
+  console.log("currentChat", currentChat)
+  console.log("profile", profile)
+  console.log("modelData", modelData)
+  console.log("messageContent", messageContent)
+  console.log("generatedText", generatedText)
+  console.log("newMessageImages", newMessageImages)
+  console.log("assistantGenerateImages", assistantGenerateImages)
+  console.log("isRegeneration", isRegeneration)
+  console.log("retrievedFileItems", retrievedFileItems)
+  console.log("selectedAssistant", selectedAssistant)
+
+
   const finalUserMessage: TablesInsert<"messages"> = {
     chat_id: currentChat.id,
     assistant_id: null,
@@ -444,23 +460,41 @@ export const handleCreateMessages = async (
       finalAssistantMessage
     ])
 
+    // FIXME: remove console.log
+    console.log("createdMessages", createdMessages)
+
     // Upload each image (stored in newMessageImages) for the user message to message_images bucket
     const uploadPromises = newMessageImages
+    .filter(obj => obj.file !== null)
+    .map(obj => {
+      let filePath = `${profile.user_id}/${currentChat.id}/${
+        createdMessages[0].id
+      }/${uuidv4()}`
+      
+      return uploadMessageImage(filePath, obj.file as File).catch(error => {
+        console.error(`Failed to upload image at ${filePath}:`, error)
+        return null
+      })
+    })
+
+    // TODO: upload assistant images
+    const assistantUploadPromises = assistantGenerateImages
       .filter(obj => obj.file !== null)
       .map(obj => {
         let filePath = `${profile.user_id}/${currentChat.id}/${
-          createdMessages[0].id
+          createdMessages[1].id
         }/${uuidv4()}`
-
+        
         return uploadMessageImage(filePath, obj.file as File).catch(error => {
           console.error(`Failed to upload image at ${filePath}:`, error)
           return null
         })
       })
 
-    const paths = (await Promise.all(uploadPromises)).filter(
-      Boolean
-    ) as string[]
+    const paths = (await Promise.all(uploadPromises)).filter(Boolean) as string[]
+    const assistantPaths = (await Promise.all(assistantUploadPromises)).filter(Boolean) as string[]
+    // console.log("paths", paths)
+    // console.log("assistantPaths", assistantPaths)
 
     setChatImages(prevImages => [
       ...prevImages,
@@ -468,6 +502,11 @@ export const handleCreateMessages = async (
         ...obj,
         messageId: createdMessages[0].id,
         path: paths[index]
+      })),
+      ...assistantGenerateImages.map((obj, index) => ({
+        ...obj,
+        messageId: createdMessages[1].id,
+        path: assistantPaths[index]
       }))
     ])
 
@@ -475,6 +514,18 @@ export const handleCreateMessages = async (
       ...createdMessages[0],
       image_paths: paths
     })
+
+    // 更新 assistant message 的 image_paths
+    const updatedAssistantMessage = await updateMessage(createdMessages[1].id, {
+      ...createdMessages[1],
+      // image_paths: assistantPaths
+      // TODO: correct path
+      image_paths: ["898989"]
+    })
+
+    console.log("updatedMessage", updatedMessage)
+    console.log("assistantPaths", assistantPaths)
+    console.log("updatedAssistantMessage", updatedAssistantMessage)
 
     const createdMessageFileItems = await createMessageFileItems(
       retrievedFileItems.map(fileItem => {
@@ -493,7 +544,9 @@ export const handleCreateMessages = async (
         fileItems: []
       },
       {
+        // TODO: gemini don't get updated assistant message
         message: createdMessages[1],
+        // message: updatedAssistantMessage,
         fileItems: retrievedFileItems.map(fileItem => fileItem.id)
       }
     ]
