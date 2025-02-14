@@ -1,2 +1,6 @@
 google
 vertexai
+langchain
+langgraph
+langchain-core
+langchain-experimental

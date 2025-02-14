@@ -59,7 +59,7 @@ export const ModelSelect: FC<ModelSelectProps> = ({
       platformLink: "",
       imageInput: false
     })),
-    ...availableHostedModels,
+    ...availableHostedModels
     // ...availableLocalModels,
     // ...availableOpenRouterModels
   ]

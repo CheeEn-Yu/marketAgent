@@ -338,7 +338,7 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
         sumModeYear,
         setSumModeYear,
         sumModeQuarter,
-        setSumModeQuarter,
+        setSumModeQuarter
       }}
     >
       {children}

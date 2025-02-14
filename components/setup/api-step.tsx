@@ -202,7 +202,7 @@ export const APIStep: FC<APIStepProps> = ({
       <div className="space-y-1">
         <Label>Select Your Role</Label>
         <select
-          className="w-full p-2 border rounded"
+          className="w-full rounded border p-2"
           onChange={e => onUserRoleChange(e.target.value)}
           value={userRole}
         >

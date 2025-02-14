@@ -392,8 +392,8 @@ export const Message: FC<MessageProps> = ({
         {/* Message images */}
         <div className="mt-3 flex flex-wrap gap-2">
           {message.image_paths.map((path, index) => {
-            const item = chatImages.find(image => image.path === path )
-            
+            const item = chatImages.find(image => image.path === path)
+
             console.log("item", item)
 
             return (

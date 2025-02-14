@@ -20,25 +20,50 @@ import { useChatHandler } from "./chat-hooks/use-chat-handler"
 import { useChatHistoryHandler } from "./chat-hooks/use-chat-history"
 import { usePromptAndCommand } from "./chat-hooks/use-prompt-and-command"
 import { useSelectFileHandler } from "./chat-hooks/use-select-file-handler"
-import Switch from 'react-switch'
+import Switch from "react-switch"
 import { set } from "date-fns"
 
-interface ChatInputProps { }
+interface ChatInputProps {}
 
-export const ChatInput: FC<ChatInputProps> = ({ }) => {
-  const Companies = ['Amazon', 'AMD', 'Amkor', 'Apple', 'Applied Material', 'Baidu', 'Broadcom', 'Cirrus Logic', 'Google', 'Himax', 'Intel', 'KLA', 'Marvell', 'Microchip', 'Microsoft', 'Nvidia', 'ON Semi', 'Qorvo', 'Qualcomm', 'Samsung', 'STM', 'Tencent', 'Texas Instruments', 'TSMC', 'Western Digital']
+export const ChatInput: FC<ChatInputProps> = ({}) => {
+  const Companies = [
+    "Amazon",
+    "AMD",
+    "Amkor",
+    "Apple",
+    "Applied Material",
+    "Baidu",
+    "Broadcom",
+    "Cirrus Logic",
+    "Google",
+    "Himax",
+    "Intel",
+    "KLA",
+    "Marvell",
+    "Microchip",
+    "Microsoft",
+    "Nvidia",
+    "ON Semi",
+    "Qorvo",
+    "Qualcomm",
+    "Samsung",
+    "STM",
+    "Tencent",
+    "Texas Instruments",
+    "TSMC",
+    "Western Digital"
+  ]
   const Years = ["2020", "2021", "2022", "2023", "2024"]
-  const Quarters = ['Q1', 'Q2', 'Q3', 'Q4']
-  
+  const Quarters = ["Q1", "Q2", "Q3", "Q4"]
+
   const { t } = useTranslation()
-  
+
   useHotkey("l", () => {
     handleFocusChatInput()
   })
 
   const [isTyping, setIsTyping] = useState<boolean>(false)
 
-  
   const {
     isAssistantPickerOpen,
     focusAssistant,
@@ -69,33 +94,33 @@ export const ChatInput: FC<ChatInputProps> = ({ }) => {
     sumModeYear,
     setSumModeYear,
     sumModeQuarter,
-    setSumModeQuarter,
+    setSumModeQuarter
   } = useContext(ChatbotUIContext)
-  
+
   const {
     chatInputRef,
     handleSendMessage,
     handleStopMessage,
     handleFocusChatInput
   } = useChatHandler()
-  
+
   const { handleInputChange } = usePromptAndCommand()
-  
+
   const { filesToAccept, handleSelectDeviceFile } = useSelectFileHandler()
-  
+
   const {
     setNewMessageContentToNextUserMessage,
     setNewMessageContentToPreviousUserMessage
   } = useChatHistoryHandler()
-  
+
   const fileInputRef = useRef<HTMLInputElement>(null)
-  
+
   useEffect(() => {
     setTimeout(() => {
       handleFocusChatInput()
     }, 200) // FIX: hacky
   }, [selectedPreset, selectedAssistant])
-  
+
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (!isTyping && event.key === "Enter" && !event.shiftKey) {
       event.preventDefault()
@@ -263,7 +288,6 @@ export const ChatInput: FC<ChatInputProps> = ({ }) => {
           />
         </>
 
-
         {/* normal chat input */}
         {!summarizationMode && (
           <TextareaAutosize
@@ -286,7 +310,7 @@ export const ChatInput: FC<ChatInputProps> = ({ }) => {
 
         {/* summarization chat input */}
         {summarizationMode && (
-            <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4">
             <select
               className="w-32 text-center"
               value={sumModeCompany}
@@ -294,7 +318,9 @@ export const ChatInput: FC<ChatInputProps> = ({ }) => {
             >
               <option value="">Company</option>
               {Companies.map((company, index) => (
-              <option key={index} value={company}>{company}</option>
+                <option key={index} value={company}>
+                  {company}
+                </option>
               ))}
             </select>
 
@@ -305,7 +331,9 @@ export const ChatInput: FC<ChatInputProps> = ({ }) => {
             >
               <option value="">Year</option>
               {Years.map((year, index) => (
-              <option key={index} value={year}>{year}</option>
+                <option key={index} value={year}>
+                  {year}
+                </option>
               ))}
             </select>
 
@@ -316,10 +344,12 @@ export const ChatInput: FC<ChatInputProps> = ({ }) => {
             >
               <option value="">Quarter</option>
               {Quarters.map((quarter, index) => (
-              <option key={index} value={quarter}>{quarter}</option>
+                <option key={index} value={quarter}>
+                  {quarter}
+                </option>
               ))}
             </select>
-            </div>
+          </div>
         )}
 
         <div className="absolute bottom-[14px] right-3 cursor-pointer hover:opacity-50">

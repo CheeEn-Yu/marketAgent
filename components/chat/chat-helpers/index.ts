@@ -212,9 +212,12 @@ export const handleHostedChat = async (
 
   let draftMessages = await buildFinalMessages(payload, profile, chatImages)
 
-  let formattedMessages : any[] = []
+  let formattedMessages: any[] = []
   if (provider === "google") {
-    formattedMessages = await adaptMessagesForGoogleGemini(payload, draftMessages)
+    formattedMessages = await adaptMessagesForGoogleGemini(
+      payload,
+      draftMessages
+    )
   } else {
     formattedMessages = draftMessages
   }
@@ -230,7 +233,7 @@ export const handleHostedChat = async (
     isSumMode: summarizationMode,
     sumModeCompany: sumModeCompany,
     sumModeYear: sumModeYear,
-    sumModeQuarter: sumModeQuarter,
+    sumModeQuarter: sumModeQuarter
   }
 
   const response = await fetchChatResponse(
@@ -425,7 +428,6 @@ export const handleCreateMessages = async (
   // console.log("retrievedFileItems", retrievedFileItems)
   // console.log("selectedAssistant", selectedAssistant)
 
-
   const finalUserMessage: TablesInsert<"messages"> = {
     chat_id: currentChat.id,
     assistant_id: null,
@@ -474,19 +476,21 @@ export const handleCreateMessages = async (
 
     // Upload each image (stored in newMessageImages) for the user message to message_images bucket
     const uploadPromises = newMessageImages
-    .filter(obj => obj.file !== null)
-    .map(obj => {
-      let filePath = `${profile.user_id}/${currentChat.id}/${
-        createdMessages[0].id
-      }/${uuidv4()}`
-      
-      return uploadMessageImage(filePath, obj.file as File).catch(error => {
-        console.error(`Failed to upload image at ${filePath}:`, error)
-        return null
-      })
-    })
+      .filter(obj => obj.file !== null)
+      .map(obj => {
+        let filePath = `${profile.user_id}/${currentChat.id}/${
+          createdMessages[0].id
+        }/${uuidv4()}`
 
-    const paths = (await Promise.all(uploadPromises)).filter(Boolean) as string[]
+        return uploadMessageImage(filePath, obj.file as File).catch(error => {
+          console.error(`Failed to upload image at ${filePath}:`, error)
+          return null
+        })
+      })
+
+    const paths = (await Promise.all(uploadPromises)).filter(
+      Boolean
+    ) as string[]
 
     setChatImages(prevImages => [
       ...prevImages,
@@ -501,7 +505,6 @@ export const handleCreateMessages = async (
       ...createdMessages[0],
       image_paths: paths
     })
-
 
     const createdMessageFileItems = await createMessageFileItems(
       retrievedFileItems.map(fileItem => {

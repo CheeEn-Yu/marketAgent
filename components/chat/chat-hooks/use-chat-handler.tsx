@@ -71,7 +71,7 @@ export const useChatHandler = () => {
     summarizationMode,
     sumModeCompany,
     sumModeYear,
-    sumModeQuarter,
+    sumModeQuarter
   } = useContext(ChatbotUIContext)
 
   const chatInputRef = useRef<HTMLTextAreaElement>(null)
@@ -197,7 +197,7 @@ export const useChatHandler = () => {
   const handleSendMessage = async (
     messageContent: string,
     chatMessages: ChatMessage[],
-    isRegeneration: boolean,
+    isRegeneration: boolean
   ) => {
     const startingInput = messageContent
 
@@ -307,7 +307,7 @@ export const useChatHandler = () => {
             isSumMode: summarizationMode,
             sumModeCompany: sumModeCompany,
             sumModeYear: sumModeYear,
-            sumModeQuarter: sumModeQuarter,
+            sumModeQuarter: sumModeQuarter
           })
         })
 
@@ -361,7 +361,7 @@ export const useChatHandler = () => {
             summarizationMode,
             sumModeCompany,
             sumModeYear,
-            sumModeQuarter,
+            sumModeQuarter
           )
           // FIXME: remove console.log
           // console.log("generatedText", generatedText)
@@ -398,7 +398,7 @@ export const useChatHandler = () => {
           return updatedChats
         })
       }
-      
+
       const assistantGenerateImages: MessageImage[] = []
 
       // // TODO: remove this test image
@@ -423,7 +423,6 @@ export const useChatHandler = () => {
 
       // assistantGenerateImages.push(testImage)
       // newMessageImages.push(testImage)
-      
 
       await handleCreateMessages(
         chatMessages,
