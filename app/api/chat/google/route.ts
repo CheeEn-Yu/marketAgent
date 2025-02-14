@@ -20,35 +20,48 @@ export async function POST(request: Request) {
     sumModeYear: string
     sumModeQuarter: string
   }
-  console.log(json)
+  // console.log(json)
   try {
     const lastMessage = messages.pop()
     const prompt = lastMessage.parts // adjust if parts is not exactly a string
     // Execute Python script
     const messagesJson = JSON.stringify(messages)
-    const pythonProcess = spawn("python", [
-      "python_backend/chat.py",
-      "--prompt",
-      prompt[0].text,
-      "--history",
-      messagesJson,
-      "--user_role",
-      userRole,
-      "--is_sum_mode",
-      isSumMode,
-      "--sum_mode_company",
-      sumModeCompany,
-      "--sum_mode_year",
-      sumModeYear,
-      "--sum_mode_quarter",
-      sumModeQuarter,
-      "--temperature",
-      chatSettings.temperature,
-      "--max_tokens",
-      chatSettings.contextLength,
-      "--model_name",
-      chatSettings.model
-    ])
+    const pythonProcess = isSumMode ?
+      spawn("python", [
+        "python_backend/summarize.py",
+        "--company",
+        sumModeCompany,
+        "--year",
+        sumModeYear,
+        "--quarter",
+        sumModeQuarter,
+      ])
+      :
+      spawn("python", [
+        "python_backend/chat.py",
+        "--prompt",
+        prompt[0].text,
+        "--history",
+        messagesJson,
+        "--user_role",
+        userRole,
+        "--is_sum_mode",
+        isSumMode,
+        "--sum_mode_company",
+        sumModeCompany,
+        "--sum_mode_year",
+        sumModeYear,
+        "--sum_mode_quarter",
+        sumModeQuarter,
+        "--temperature",
+        chatSettings.temperature,
+        "--max_tokens",
+        chatSettings.contextLength,
+        "--model_name",
+        chatSettings.model
+      ]) 
+      
+
     let pythonData = ""
 
     pythonProcess.stdout.on("data", data => {

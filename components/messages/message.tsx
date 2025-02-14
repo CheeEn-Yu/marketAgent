@@ -188,6 +188,12 @@ export const Message: FC<MessageProps> = ({
     return acc
   }, fileAccumulator)
 
+  // const regex = /^Line_Chart.*\.png$/;
+  // const isLineChart = regex.test(message.content);
+  const isLineChart = message.content.includes("Line_Chart") && message.content.includes(".png");
+  // console.log("isLineChart", isLineChart);
+  // console.log("message.content", message.content);
+
   return (
     <div
       className={cn(
@@ -267,8 +273,8 @@ export const Message: FC<MessageProps> = ({
                 {message.role === "assistant"
                   ? message.assistant_id
                     ? assistants.find(
-                        assistant => assistant.id === message.assistant_id
-                      )?.name
+                      assistant => assistant.id === message.assistant_id
+                    )?.name
                     : selectedAssistant
                       ? selectedAssistant?.name
                       : MODEL_DATA?.modelName
@@ -279,9 +285,9 @@ export const Message: FC<MessageProps> = ({
 
           {/* Message text */}
           {!firstTokenReceived &&
-          isGenerating &&
-          isLast &&
-          message.role === "assistant" ? (
+            isGenerating &&
+            isLast &&
+            message.role === "assistant" ? (
             <>
               {(() => {
                 switch (toolInUse) {
@@ -316,6 +322,8 @@ export const Message: FC<MessageProps> = ({
               onValueChange={setEditedMessage}
               maxRows={20}
             />
+          ) : isLineChart ? (
+            <></>
           ) : (
             <MessageMarkdown content={message.content} />
           )}
@@ -391,7 +399,15 @@ export const Message: FC<MessageProps> = ({
 
         {/* Message images */}
         <div className="mt-3 flex flex-wrap gap-2">
-          {message.image_paths.map((path, index) => {
+          {isLineChart && (
+            <img
+              src={"/api/image?img_path=" + message.content}
+              alt="test image"
+              // height="350px"
+              // width="350px"
+            />
+          )}
+          {/* {message.image_paths.map((path, index) => {
             const item = chatImages.find(image => image.path === path)
 
             console.log("item", item)
@@ -418,7 +434,7 @@ export const Message: FC<MessageProps> = ({
                 loading="lazy"
               />
             )
-          })}
+          })} */}
 
           {/* FIXME: remove test image */}
 

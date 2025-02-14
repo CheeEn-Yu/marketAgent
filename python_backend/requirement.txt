@@ -4,3 +4,7 @@ langchain
 langgraph
 langchain-core
 langchain-experimental
+langchain_google_vertexai
+matplotlib
+pandas
+seaborn
