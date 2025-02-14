@@ -140,6 +140,12 @@ interface ChatbotUIContext {
   // CHAT MODE
   summarizationMode: boolean
   setSummarizationMode: Dispatch<SetStateAction<boolean>>
+  sumModeCompany: string
+  setSumModeCompany: Dispatch<SetStateAction<string>>
+  sumModeYear: string
+  setSumModeYear: Dispatch<SetStateAction<string>>
+  sumModeQuarter: string
+  setSumModeQuarter: Dispatch<SetStateAction<string>>
 }
 
 export const ChatbotUIContext = createContext<ChatbotUIContext>({

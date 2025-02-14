@@ -125,6 +125,9 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
 
   // CHAT MODE
   const [summarizationMode, setSummarizationMode] = useState<boolean>(false)
+  const [sumModeCompany, setSumModeCompany] = useState<string>("")
+  const [sumModeYear, setSumModeYear] = useState<string>("")
+  const [sumModeQuarter, setSumModeQuarter] = useState<string>("")
 
   useEffect(() => {
     ;(async () => {
@@ -329,7 +332,13 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
 
         // CHAT MODE
         summarizationMode,
-        setSummarizationMode
+        setSummarizationMode,
+        sumModeCompany,
+        setSumModeCompany,
+        sumModeYear,
+        setSumModeYear,
+        sumModeQuarter,
+        setSumModeQuarter,
       }}
     >
       {children}

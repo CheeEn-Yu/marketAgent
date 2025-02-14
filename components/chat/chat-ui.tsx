@@ -18,7 +18,6 @@ import { ChatInput } from "./chat-input"
 import { ChatMessages } from "./chat-messages"
 import { ChatScrollButtons } from "./chat-scroll-buttons"
 import { ChatSecondaryButtons } from "./chat-secondary-buttons"
-import TestImage from "../messages/message-test"
 
 interface ChatUIProps {}
 

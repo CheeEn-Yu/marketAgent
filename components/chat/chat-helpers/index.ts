@@ -199,7 +199,11 @@ export const handleHostedChat = async (
   setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>,
   setFirstTokenReceived: React.Dispatch<React.SetStateAction<boolean>>,
   setChatMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>,
-  setToolInUse: React.Dispatch<React.SetStateAction<string>>
+  setToolInUse: React.Dispatch<React.SetStateAction<string>>,
+  summarizationMode: boolean,
+  sumModeCompany: string,
+  sumModeYear: string,
+  sumModeQuarter: string
 ) => {
   const provider =
     modelData.provider === "openai" && profile.use_azure_openai
@@ -222,7 +226,11 @@ export const handleHostedChat = async (
     chatSettings: payload.chatSettings,
     messages: formattedMessages,
     customModelId: provider === "custom" ? modelData.hostedId : "",
-    userRole: profile?.userrole
+    userRole: profile?.userrole,
+    isSumMode: summarizationMode,
+    sumModeCompany: sumModeCompany,
+    sumModeYear: sumModeYear,
+    sumModeQuarter: sumModeQuarter,
   }
 
   const response = await fetchChatResponse(
@@ -478,24 +486,7 @@ export const handleCreateMessages = async (
       })
     })
 
-    // TODO: upload assistant images
-    const assistantUploadPromises = assistantGenerateImages
-      .filter(obj => obj.file !== null)
-      .map(obj => {
-        let filePath = `${profile.user_id}/${currentChat.id}/${
-          createdMessages[1].id
-        }/${uuidv4()}`
-        
-        return uploadMessageImage(filePath, obj.file as File).catch(error => {
-          console.error(`Failed to upload image at ${filePath}:`, error)
-          return null
-        })
-      })
-
     const paths = (await Promise.all(uploadPromises)).filter(Boolean) as string[]
-    const assistantPaths = (await Promise.all(assistantUploadPromises)).filter(Boolean) as string[]
-    // console.log("paths", paths)
-    // console.log("assistantPaths", assistantPaths)
 
     setChatImages(prevImages => [
       ...prevImages,
@@ -503,11 +494,6 @@ export const handleCreateMessages = async (
         ...obj,
         messageId: createdMessages[0].id,
         path: paths[index]
-      })),
-      ...assistantGenerateImages.map((obj, index) => ({
-        ...obj,
-        messageId: createdMessages[1].id,
-        path: assistantPaths[index]
       }))
     ])
 
@@ -516,17 +502,6 @@ export const handleCreateMessages = async (
       image_paths: paths
     })
 
-    // 更新 assistant message 的 image_paths
-    const updatedAssistantMessage = await updateMessage(createdMessages[1].id, {
-      ...createdMessages[1],
-      // image_paths: assistantPaths
-      // TODO: correct path
-      image_paths: ["898989"]
-    })
-
-    console.log("updatedMessage", updatedMessage)
-    console.log("assistantPaths", assistantPaths)
-    console.log("updatedAssistantMessage", updatedAssistantMessage)
 
     const createdMessageFileItems = await createMessageFileItems(
       retrievedFileItems.map(fileItem => {

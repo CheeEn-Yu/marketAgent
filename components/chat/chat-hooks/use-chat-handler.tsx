@@ -67,7 +67,11 @@ export const useChatHandler = () => {
     models,
     isPromptPickerOpen,
     isFilePickerOpen,
-    isToolPickerOpen
+    isToolPickerOpen,
+    summarizationMode,
+    sumModeCompany,
+    sumModeYear,
+    sumModeQuarter,
   } = useContext(ChatbotUIContext)
 
   const chatInputRef = useRef<HTMLTextAreaElement>(null)
@@ -193,7 +197,7 @@ export const useChatHandler = () => {
   const handleSendMessage = async (
     messageContent: string,
     chatMessages: ChatMessage[],
-    isRegeneration: boolean
+    isRegeneration: boolean,
   ) => {
     const startingInput = messageContent
 
@@ -299,7 +303,11 @@ export const useChatHandler = () => {
             chatSettings: payload.chatSettings,
             messages: formattedMessages,
             selectedTools,
-            userRole: profile!.userrole
+            userRole: profile!.userrole,
+            isSumMode: summarizationMode,
+            sumModeCompany: sumModeCompany,
+            sumModeYear: sumModeYear,
+            sumModeQuarter: sumModeQuarter,
           })
         })
 
@@ -349,7 +357,11 @@ export const useChatHandler = () => {
             setIsGenerating,
             setFirstTokenReceived,
             setChatMessages,
-            setToolInUse
+            setToolInUse,
+            summarizationMode,
+            sumModeCompany,
+            sumModeYear,
+            sumModeQuarter,
           )
           // FIXME: remove console.log
           // console.log("generatedText", generatedText)

@@ -21,18 +21,24 @@ import { useChatHistoryHandler } from "./chat-hooks/use-chat-history"
 import { usePromptAndCommand } from "./chat-hooks/use-prompt-and-command"
 import { useSelectFileHandler } from "./chat-hooks/use-select-file-handler"
 import Switch from 'react-switch'
+import { set } from "date-fns"
 
-interface ChatInputProps {}
+interface ChatInputProps { }
 
-export const ChatInput: FC<ChatInputProps> = ({}) => {
+export const ChatInput: FC<ChatInputProps> = ({ }) => {
+  const Companies = ['Amazon', 'AMD', 'Amkor', 'Apple', 'Applied Material', 'Baidu', 'Broadcom', 'Cirrus Logic', 'Google', 'Himax', 'Intel', 'KLA', 'Marvell', 'Microchip', 'Microsoft', 'Nvidia', 'ON Semi', 'Qorvo', 'Qualcomm', 'Samsung', 'STM', 'Tencent', 'Texas Instruments', 'TSMC', 'Western Digital']
+  const Years = ["2020", "2021", "2022", "2023", "2024"]
+  const Quarters = ['Q1', 'Q2', 'Q3', 'Q4']
+  
   const { t } = useTranslation()
-
+  
   useHotkey("l", () => {
     handleFocusChatInput()
   })
 
   const [isTyping, setIsTyping] = useState<boolean>(false)
 
+  
   const {
     isAssistantPickerOpen,
     focusAssistant,
@@ -57,33 +63,39 @@ export const ChatInput: FC<ChatInputProps> = ({}) => {
     setSelectedTools,
     assistantImages,
     summarizationMode,
-    setSummarizationMode
+    setSummarizationMode,
+    sumModeCompany,
+    setSumModeCompany,
+    sumModeYear,
+    setSumModeYear,
+    sumModeQuarter,
+    setSumModeQuarter,
   } = useContext(ChatbotUIContext)
-
+  
   const {
     chatInputRef,
     handleSendMessage,
     handleStopMessage,
     handleFocusChatInput
   } = useChatHandler()
-
+  
   const { handleInputChange } = usePromptAndCommand()
-
+  
   const { filesToAccept, handleSelectDeviceFile } = useSelectFileHandler()
-
+  
   const {
     setNewMessageContentToNextUserMessage,
     setNewMessageContentToPreviousUserMessage
   } = useChatHistoryHandler()
-
+  
   const fileInputRef = useRef<HTMLInputElement>(null)
-
+  
   useEffect(() => {
     setTimeout(() => {
       handleFocusChatInput()
     }, 200) // FIX: hacky
   }, [selectedPreset, selectedAssistant])
-
+  
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (!isTyping && event.key === "Enter" && !event.shiftKey) {
       event.preventDefault()
@@ -252,22 +264,63 @@ export const ChatInput: FC<ChatInputProps> = ({}) => {
         </>
 
 
-        <TextareaAutosize
-          textareaRef={chatInputRef}
-          className="ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring text-md flex w-full resize-none rounded-md border-none bg-transparent px-14 py-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-          placeholder={t(
-            // `Ask anything. Type "@" for assistants, "/" for prompts, "#" for files, and "!" for tools.`
-            `Ask anything. Type @  /  #  !`
-          )}
-          onValueChange={handleInputChange}
-          value={userInput}
-          minRows={1}
-          maxRows={18}
-          onKeyDown={handleKeyDown}
-          onPaste={handlePaste}
-          onCompositionStart={() => setIsTyping(true)}
-          onCompositionEnd={() => setIsTyping(false)}
-        />
+        {/* normal chat input */}
+        {!summarizationMode && (
+          <TextareaAutosize
+            textareaRef={chatInputRef}
+            className="ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring text-md flex w-full resize-none rounded-md border-none bg-transparent px-14 py-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+            placeholder={t(
+              // `Ask anything. Type "@" for assistants, "/" for prompts, "#" for files, and "!" for tools.`
+              `Ask anything. Type @  /  #  !`
+            )}
+            onValueChange={handleInputChange}
+            value={userInput}
+            minRows={1}
+            maxRows={18}
+            onKeyDown={handleKeyDown}
+            onPaste={handlePaste}
+            onCompositionStart={() => setIsTyping(true)}
+            onCompositionEnd={() => setIsTyping(false)}
+          />
+        )}
+
+        {/* summarization chat input */}
+        {summarizationMode && (
+            <div className="flex items-center gap-4">
+            <select
+              className="w-32 text-center"
+              value={sumModeCompany}
+              onChange={e => setSumModeCompany(e.target.value)}
+            >
+              <option value="">Company</option>
+              {Companies.map((company, index) => (
+              <option key={index} value={company}>{company}</option>
+              ))}
+            </select>
+
+            <select
+              className="w-32 text-center"
+              value={sumModeYear}
+              onChange={e => setSumModeYear(e.target.value)}
+            >
+              <option value="">Year</option>
+              {Years.map((year, index) => (
+              <option key={index} value={year}>{year}</option>
+              ))}
+            </select>
+
+            <select
+              className="w-32 text-center"
+              value={sumModeQuarter}
+              onChange={e => setSumModeQuarter(e.target.value)}
+            >
+              <option value="">Quarter</option>
+              {Quarters.map((quarter, index) => (
+              <option key={index} value={quarter}>{quarter}</option>
+              ))}
+            </select>
+            </div>
+        )}
 
         <div className="absolute bottom-[14px] right-3 cursor-pointer hover:opacity-50">
           {isGenerating ? (
@@ -292,7 +345,7 @@ export const ChatInput: FC<ChatInputProps> = ({}) => {
           )}
         </div>
       </div>
-      
+
       <div className="relative mt-3 flex min-h-[60px] w-full items-center justify-center">
         <button
           className="flex items-center justify-center rounded-full bg-gray-200 px-4 py-2 text-black"

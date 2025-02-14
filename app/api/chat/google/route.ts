@@ -3,18 +3,22 @@ import { spawn } from 'child_process';
 
 export async function POST(request: Request) {
   const json = await request.json()
-  const { chatSettings, messages, userRole } = json as {
+  const { chatSettings, messages, userRole, isSumMode, sumModeCompany, sumModeYear, sumModeQuarter } = json as {
     chatSettings: ChatSettings
     messages: any[]
-    userrole: string
+    userRole: string
+    isSumMode: boolean,
+    sumModeCompany: string,
+    sumModeYear: string,
+    sumModeQuarter: string,
   }
-  
+  console.log(json)
   try {
     const lastMessage = messages.pop()
     const prompt = lastMessage.parts  // adjust if parts is not exactly a string
     // Execute Python script
     const messagesJson = JSON.stringify(messages)
-    const pythonProcess = spawn('python', ["python_backend/rag_v2.py", "--prompt", prompt[0].text, "--history", messagesJson, "--user_role", userRole]);
+    const pythonProcess = spawn('python', ["python_backend/rag.py", "--prompt", prompt[0].text, "--history", messagesJson, "--user_role", userRole]);
     let pythonData = '';  
 
     pythonProcess.stdout.on('data', (data) => {
