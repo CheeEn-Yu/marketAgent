@@ -1,4 +1,5 @@
 import os
+import io
 from typing import Dict, List, TypedDict, Annotated
 from datetime import datetime
 from langgraph.graph import Graph, StateGraph
@@ -7,9 +8,11 @@ from langgraph.prebuilt import ToolExecutor
 import pandas as pd
 import matplotlib.pyplot as plt
 from vertexai.generative_models import GenerationConfig, GenerativeModel
+from google.cloud import aiplatform, storage
 import json
 import seaborn as sns
 import datetime
+import argparse
 
 now = datetime.datetime.now()
 
@@ -19,8 +22,56 @@ formatted_time = now.strftime("%Y%m%d-%H-%M-%S")
 REPORT_DIR = f"summarize_reports/{formatted_time}"
 os.makedirs(REPORT_DIR, exist_ok=True)
 
+PROJECT_ID = PROJECT_ID
+REGION = "us-central1"
+aiplatform.init(project=PROJECT_ID, location=REGION)
+
 # 假設 VertexAI、GenerationConfig、Graph、StateGraph 等工具已正確引入
 # 以下為示例，請確保實際使用時這些工具正確導入
+
+def load_csv_from_bucket(bucket_name, blob_name):
+    """
+    從指定的 bucket 讀取 CSV 檔案內容，並將內容印出，不需先下載到本地端。
+    
+    :param bucket_name: bucket 的名稱
+    :param blob_name: CSV 檔案在 bucket 中的路徑或名稱
+    """
+    # print(f"Loading CSV file from bucket {bucket_name} with blob name {blob_name}")
+    # 建立 Storage client
+    client = storage.Client()
+    bucket = client.bucket(bucket_name)
+    blob = bucket.blob(blob_name)
+    
+    # 直接從 blob 讀取資料（bytes 格式），並解碼成字串
+    csv_bytes = blob.download_as_string()
+    csv_str = csv_bytes.decode('utf-8')
+    
+    # 使用 io.StringIO 將字串轉換成檔案物件，供 csv.reader 使用
+    csv_file = io.StringIO(csv_str)
+    return csv_file
+
+def load_transcript_from_bucket(bucket_name, blob_name):
+    client = storage.Client()
+    bucket = client.bucket(bucket_name)
+    blob = bucket.blob(blob_name)
+    
+    # 直接從 blob 讀取資料（bytes 格式），並解碼成字串
+    transcript_bytes = blob.download_as_string()
+    transcript_str = transcript_bytes.decode('utf-8')
+    
+    # 使用 io.StringIO 將字串轉換成檔案物件，供 transcript.reader 使用
+    transcript_file = io.StringIO(transcript_str)
+    return transcript_file
+
+def find_transcript_name(company, year, quarter):
+    df = pd.read_csv('python_backend/TRANSCRIPT_Data.csv')
+    result = df[(df['Company Name'] == company) & (df['CALENDAR_YEAR'] == year) & (df['CALENDAR_QTR'] == quarter)]
+
+    if not result.empty:
+        return result.iloc[0]['Transcript_Filename']
+    else:
+        return None
+
 
 class AnalysisState(TypedDict):
     csv_path: str
@@ -50,7 +101,8 @@ class ReportGeneratorAgent:
     
     def _analyze_csv_data(self, state: AnalysisState) -> AnalysisState:
         """分析 CSV 數據，僅使用指定 Company 且年份小於傳入 Year，或年份等於傳入 Year 且 Quarter 小於等於傳入的資料"""
-        df = pd.read_csv(state["csv_path"])
+        csv_file = load_csv_from_bucket("careerhack2025-bsid-resource-bucket", f"FIN_Data.csv")
+        df = pd.read_csv(csv_file)
         # 過濾 Company
         df = df[df["Company Name"] == state["company"]]
         # 確保 CALENDAR_YEAR 為整數
@@ -81,8 +133,7 @@ class ReportGeneratorAgent:
     
     def _analyze_transcript(self, state: AnalysisState) -> AnalysisState:
         """分析逐字稿內容"""
-        with open(state["transcript_path"], "r", encoding="utf-8") as f:
-            transcript = f.read()
+        transcript = state["transcript_path"].getvalue()
         
         prompt = f"""
         You are a financial analyst with expertise in corporate earnings reports, market trends, and financial data interpretation. Your task is to analyze the following transcript and extract key insights to assist in generating a high-quality financial report.
@@ -173,7 +224,8 @@ class ReportGeneratorAgent:
         """根據數據創建視覺化圖表與表格，展示多季財務數據的趨勢、結構與財務比率。
         當可用季度資料少於 3 筆時，不生成趨勢圖與成長率圖表。"""
         # print("Starting visualization creation...")
-        df = pd.read_csv(state["csv_path"])
+        csv_file = load_csv_from_bucket("careerhack2025-bsid-resource-bucket", f"FIN_Data.csv")
+        df = pd.read_csv(csv_file)
         # print("CSV data loaded.")
         
         # 確保 CALENDAR_YEAR 和 CALENDAR_QTR 為整數
@@ -365,6 +417,7 @@ class ReportGeneratorAgent:
         {report_content}
         """
         evaluated_report = self.model.predict(evaluation_prompt)
+        print(evaluated_report)
         
         # 保存最終經過自我評估修正的報告
         final_report_path = os.path.join(REPORT_DIR, "final_report.md")
@@ -409,13 +462,28 @@ class ReportGeneratorAgent:
         final_state = self.graph.invoke(initial_state)
         return final_state["report_path"]
 
+def main():
+    parser = argparse.ArgumentParser(description="Generate content using a generative model.")
 
-agent = ReportGeneratorAgent()
-report_path = agent.generate_report(
-    csv_path="/Users/wei-chinwang/NTU/TSMC_hack/marketAgent/FIN_Data.csv",
-    transcript_path="/Users/wei-chinwang/NTU/TSMC_hack/resource/Transcript File/Apple Inc. (NASDAQ AAPL) Q2 2022 Earnings Conference Call.txt",
-    company="Apple",
-    quarter=2,
-    year=2022
-)
-print(f"Report generated at: {report_path}")
+    parser.add_argument("--company", type=str, default="", help="The company name to summarize")
+    parser.add_argument("--year", type=str, default="", help="The year to summarize")
+    parser.add_argument("--quarter", type=str, default="Q1", help="The quarter to summarize")
+    args = parser.parse_args()
+
+    agent = ReportGeneratorAgent()
+    csv_file = load_csv_from_bucket("careerhack2025-bsid-resource-bucket", f"FIN_Data.csv")
+
+    transcript_name = find_transcript_name(args.company, int(args.year), args.quarter)
+    # print(f"Transcript name: {transcript_name}")
+    transcript_file = load_transcript_from_bucket("tsmccareerhack2025-bsid-grp6-bucket", f"Transcript File/Transcript File/{transcript_name}.txt")
+    report_path = agent.generate_report(
+        csv_path=csv_file,
+        transcript_path=transcript_file,
+        company=args.company,
+        quarter=int(args.quarter[1]),
+        year=int(args.year)
+    )
+    # print(f"Report generated at: {report_path}")
+
+if __name__ == "__main__":
+    main()

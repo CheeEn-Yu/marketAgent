@@ -208,7 +208,7 @@ export const ChatInput: FC<ChatInputProps> = ({}) => {
   const toggleSummarizationMode = () => {
     setSummarizationMode(!summarizationMode)
     if (!summarizationMode) {
-      handleInputChange("Summarize: " + userInput)
+      handleInputChange("Summarize: " + sumModeCompany + " " + sumModeYear + " " + sumModeQuarter)
     } else {
       handleInputChange(userInput.replace(/^Summarize:\s*/, ""))
     }
