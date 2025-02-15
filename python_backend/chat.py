@@ -99,7 +99,6 @@ def parse_user_query_with_gemini(query, model, get_plot_args):
         )
         
         if not response or not response.candidates:
-            #print("No functional response from Gemini")
             return None
 
         candidate = response.candidates[0]
@@ -201,6 +200,46 @@ def plot_financial_data(df, parsed_query):
 
 def csv_agent(args, csv_file_path):
     model = VertexAI(model_name=args.model_name)
+    choose_tool_func = FunctionDeclaration(
+            name="choose_tool",
+            description="""判斷問題是匯率?歷年財年?(查TRANSCRIPT_data.csv)還是查資料?""",
+            parameters={
+                "type": "object",
+                "properties": {
+                    "tool_name": {
+                        "type": "string",
+                        "description": "string of tool name include ['convert_calendar_fiscal', 'exchange_rate', 'search_finantial_index']."
+                    }
+                }
+            },
+        )
+    tool_kit = Tool(function_declarations=[choose_tool_func])
+    tool_choise = model.client.generate_content(args.prompt, tools=[tool_kit], tool_config=ToolConfig(
+                function_calling_config=ToolConfig.FunctionCallingConfig(
+                    mode=ToolConfig.FunctionCallingConfig.Mode.ANY,
+                ))
+        )
+    tool_choise_part = tool_choise.candidates[0].content.parts[0]
+    # print(tool_choise_part)
+    # print("tool func call:::", tool_choise_part.function_call)
+    # print("tool func call args:::", tool_choise_part.function_call.args)
+    # print("tool func call args value:::", tool_choise_part.function_call.args['tool_name'])
+    prompt = ""
+    if hasattr(tool_choise_part, 'function_call') and tool_choise_part.function_call:
+        if tool_choise_part.function_call.name == "choose_tool":
+            tool_name = tool_choise_part.function_call.args['tool_name']
+            if tool_name == "convert_calendar_fiscal":
+                sys_prompt = """
+                請做歷年(calendar year)與財年(fiscal year)的轉換，以下為使用者輸入:
+                """
+                csv_file_path = load_csv_from_bucket("tsmccareerhack2025-bsid-grp6-bucket", "TRANSCRIPT_Data_with_FiscalYear.csv")
+            elif tool_name == "exchange_rate":
+                sys_prompt = """
+                美金與台幣匯率以1 USD = 32.93 TWD 為基準
+                """
+            elif tool_name == "search_finantial_index":
+                sys_prompt = ""
+            prompt = sys_prompt + args.prompt
     agent = create_csv_agent(
         model,
         csv_file_path,
@@ -208,7 +247,7 @@ def csv_agent(args, csv_file_path):
         agent_type=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
         allow_dangerous_code=True,
     )
-    return agent.run(args.prompt)
+    return agent.run(prompt)
 
 def rag_agent(args, rag_retrieval_tool):
     try:
@@ -253,7 +292,7 @@ def main_worker(args, history):
     # 利用已部署的 Corpus 名稱建立一個簡單的對象，以便後續傳入 RAG SDK
     corpus = type("Corpus", (), {"name": existing_corpus})
     try:
-        topk = 20 if args.user_role == "Global" else 10
+        topk = 20 if args.user_role == "Global" else 12
         rag_retrieval_tool = Tool.from_retrieval(
             retrieval=rag.Retrieval(
                 source=rag.VertexRagStore(
@@ -341,7 +380,7 @@ def main_worker(args, history):
             ),
             tools=[tool_kit]
         )
-        response = model.generate_content("如果是針對法說會的問題，call rag_retrieval。如果使用者問各種指標，call csv_agent來從database load相關資料來回答。如果使用者要求畫折線圖(line plot)，call plot_line_chart。以下為使用者問題:"+args.prompt, tools=[tool_kit], tool_config=ToolConfig(
+        response = model.generate_content("你有三個工具可以使用:[csv_agent, rag_retrieval, line_plot]如果使用者問歷年(calendar year)和財年(fiscal year)的轉換，或者問匯率的轉換，或者問以下指標:['Cost of Goods Sold', 'Operating Expense', 'Operating Income', 'Revenue', 'Tax Expense', 'Total Asset' , 'Gross profit margin' , 'Operating margin'] 都call csv_agent來解決以上三種問題。如果是針對法說會的問題，call rag_retrieval。如果使用者要求畫折線圖(line plot)，call plot_line_chart。以下為使用者問題:"+args.prompt, tools=[tool_kit], tool_config=ToolConfig(
                 function_calling_config=ToolConfig.FunctionCallingConfig(
                     mode=ToolConfig.FunctionCallingConfig.Mode.ANY,
                 )
