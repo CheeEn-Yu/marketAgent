@@ -362,18 +362,15 @@ def main_worker(args, history):
             elif response_part.function_call.name == "rag_retrieval":
                 print("Call rag_retrieval function")
                 response = rag_agent(args, rag_retrieval_tool)
-                return response
+                print(response)
             elif response_part.function_call.name == "plot_line_chart":
-                print("Call plot_line_chart function")
                 df, _ = load_and_categorize(csv_file_path)
+                parsed_query = parse_user_query_with_gemini(args.prompt, model, get_plot_func)
                 if parsed_query:
                     path = plot_financial_data(df, parsed_query)
                     print(path)
                 else:
                     print("Error : Failed to parse query")
-                parsed_query = parse_user_query_with_gemini(args.prompt)
-                path = plot_financial_data(pd.read_csv("FIN_Data.csv"), response_part.function_call.args)
-                print(path)
         else:
             print(response_part.text)
         # chat = model.client.start_chat(history=history)
