@@ -3,7 +3,8 @@
 
 This project introduces an AI Market Agent, a generative AI-powered assistant that enables users to interact with financial data through natural language. The agent automatically analyzes financial reports, retrieves key insights from CSV data and earnings call transcripts, and generates visualized financial summaries—all without requiring IT team intervention.
 
-#Team members: [Chee-En Yu](https://github.com/CheeEn-Yu), [Chia-Hua Yang](https://github.com/joker-abc), [Wei-Chin Wang](https://github.com/wwchin),
+# Team members
+[Chee-En Yu](https://github.com/CheeEn-Yu), [Chia-Hua Yang](https://github.com/joker-abc), [Wei-Chin Wang](https://github.com/wwchin), [Teng-Yun Hsiao](https://scholar.google.com.tw/citations?user=rXbijt8AAAAJ&hl=zh-TW)
 
 # Key features
 - Automated Financial Data Analysis – Generates real-time financial insights and reports.
