@@ -1,58 +1,19 @@
-# Chatbot UI
+# AI Market Agent – Real-time Financial Data Analysis
+#1st place, TSMC IT CareerHack 2025
 
-The open-source AI chat app for everyone.
+This project introduces an AI Market Agent, a generative AI-powered assistant that enables users to interact with financial data through natural language. The agent automatically analyzes financial reports, retrieves key insights from CSV data and earnings call transcripts, and generates visualized financial summaries—all without requiring IT team intervention.
 
-<img src="./public/readme/screenshot.png" alt="Chatbot UI" width="600">
+# Key features
+- Automated Financial Data Analysis – Generates real-time financial insights and reports.
+- Data Retrieval & Visualization – Extracts key indicators from CSV files and earnings transcripts, presenting insights in an intuitive format.
 
-## Demo
+# Introduction
+The AI Market Agent leverages [plan-and-solve prompting](https://langchain-ai.github.io/langgraph/tutorials/plan-and-execute/plan-and-execute/) to break down complex financial queries, an agent graph to manage multi-step reasoning, and a [CSV agent in LangChain](https://python.langchain.com/v0.2/api_reference/cohere/csv_agent/langchain_cohere.csv_agent.agent.create_csv_agent.html) for structured data extraction. It also employs [function calling with vertex AI](https://cloud.google.com/vertex-ai/generative-ai/docs/multimodal/function-calling) to dynamically select the best analytical tools and self-refinement techniques to minimize hallucinations, ensuring more accurate responses. All implementation can be found in the [python_backend/](./python_backend/) folder. We have also open-sourced the final presentation slides, as well as the CSV data and earnings call transcripts used in the competition, which can be found in the [docs/](./docs/) folder.
 
-View the latest demo [here](https://x.com/mckaywrigley/status/1738273242283151777?s=20).
+## UI template
+We adopted [Chatbot UI](https://www.chatbotui.com/) as the user interface. Below is a simple guide on how to run this UI locally. For more details, please refer to the original repository.
 
-## Updates
-
-Hey everyone! I've heard your feedback and am working hard on a big update.
-
-Things like simpler deployment, better backend compatibility, and improved mobile layouts are on their way.
-
-Be back soon.
-
--- Mckay
-
-## Official Hosted Version
-
-Use Chatbot UI without having to host it yourself!
-
-Find the official hosted version of Chatbot UI [here](https://chatbotui.com).
-
-## Sponsor
-
-If you find Chatbot UI useful, please consider [sponsoring](https://github.com/sponsors/mckaywrigley) me to support my open-source work :)
-
-## Issues
-
-We restrict "Issues" to actual issues related to the codebase.
-
-We're getting excessive amounts of issues that amount to things like feature requests, cloud provider issues, etc.
-
-If you are having issues with things like setup, please refer to the "Help" section in the "Discussions" tab above.
-
-Issues unrelated to the codebase will likely be closed immediately.
-
-## Discussions
-
-We highly encourage you to participate in the "Discussions" tab above!
-
-Discussions are a great place to ask questions, share ideas, and get help.
-
-Odds are if you have a question, someone else has the same question.
-
-## Legacy Code
-
-Chatbot UI was recently updated to its 2.0 version.
-
-The code for 1.0 can be found on the `legacy` branch.
-
-## Updating
+### Updating
 
 In your terminal at the root of your local Chatbot UI repository, run:
 
@@ -68,19 +29,19 @@ npm run db-push
 
 to apply the latest migrations to your live database.
 
-## Local Quickstart
+### Local Quickstart
 
 Follow these steps to get your own Chatbot UI instance running locally.
 
 You can watch the full video tutorial [here](https://www.youtube.com/watch?v=9Qq3-7-HNgw).
 
-### 1. Clone the Repo
+#### 1. Clone the Repo
 
 ```bash
 git clone https://github.com/mckaywrigley/chatbot-ui.git
 ```
 
-### 2. Install Dependencies
+#### 2. Install Dependencies
 
 Open a terminal in the root directory of your local Chatbot UI repository and run:
 
@@ -88,9 +49,9 @@ Open a terminal in the root directory of your local Chatbot UI repository and ru
 npm install
 ```
 
-### 3. Install Supabase & Run Locally
+#### 3. Install Supabase & Run Locally
 
-#### Why Supabase?
+##### Why Supabase?
 
 Previously, we used local browser storage to store data. However, this was not a good solution for a few reasons:
 
@@ -102,11 +63,11 @@ We now use Supabase because it's easy to use, it's open-source, it's Postgres, a
 
 We will support other providers in the future to give you more options.
 
-#### 1. Install Docker
+##### 1. Install Docker
 
 You will need to install Docker to run Supabase locally. You can download it [here](https://docs.docker.com/get-docker) for free.
 
-#### 2. Install Supabase CLI
+##### 2. Install Supabase CLI
 
 **MacOS/Linux**
 
@@ -121,7 +82,7 @@ scoop bucket add supabase https://github.com/supabase/scoop-bucket.git
 scoop install supabase
 ```
 
-#### 3. Start Supabase
+##### 3. Start Supabase
 
 In your terminal at the root of your local Chatbot UI repository, run:
 
@@ -129,9 +90,9 @@ In your terminal at the root of your local Chatbot UI repository, run:
 supabase start
 ```
 
-### 4. Fill in Secrets
+#### 4. Fill in Secrets
 
-#### 1. Environment Variables
+##### 1. Environment Variables
 
 In your terminal at the root of your local Chatbot UI repository, run:
 
@@ -151,7 +112,7 @@ Now go to your `.env.local` file and fill in the values.
 
 If the environment variable is set, it will disable the input in the user settings.
 
-#### 2. SQL Setup
+##### 2. SQL Setup
 
 In the 1st migration file `supabase/migrations/20240108234540_setup.sql` you will need to replace 2 values with the values you got above:
 
@@ -160,11 +121,11 @@ In the 1st migration file `supabase/migrations/20240108234540_setup.sql` you wil
 
 This prevents issues with storage files not being deleted properly.
 
-### 5. Install Ollama (optional for local models)
+#### 5. Install Ollama (optional for local models)
 
 Follow the instructions [here](https://github.com/jmorganca/ollama#macos).
 
-### 6. Run app locally
+#### 6. Run app locally
 
 In your terminal at the root of your local Chatbot UI repository, run:
 
@@ -176,13 +137,13 @@ Your local instance of Chatbot UI should now be running at [http://localhost:300
 
 You can view your backend GUI at [http://localhost:54323/project/default/editor](http://localhost:54323/project/default/editor).
 
-## Hosted Quickstart
+### Hosted Quickstart
 
 Follow these steps to get your own Chatbot UI instance running in the cloud.
 
 Video tutorial coming soon.
 
-### 1. Follow Local Quickstart
+#### 1. Follow Local Quickstart
 
 Repeat steps 1-4 in "Local Quickstart" above.
 
@@ -190,13 +151,13 @@ You will want separate repositories for your local and hosted instances.
 
 Create a new repository for your hosted instance of Chatbot UI on GitHub and push your code to it.
 
-### 2. Setup Backend with Supabase
+#### 2. Setup Backend with Supabase
 
-#### 1. Create a new project
+##### 1. Create a new project
 
 Go to [Supabase](https://supabase.com/) and create a new project.
 
-#### 2. Get Project Values
+##### 2. Get Project Values
 
 Once you are in the project dashboard, click on the "Project Settings" icon tab on the far bottom left.
 
@@ -216,7 +177,7 @@ Here you will get the values for the following environment variables:
 
 - `Service role key`: Found in "Project API keys" as "service_role" (Reminder: Treat this like a password!)
 
-#### 3. Configure Auth
+##### 3. Configure Auth
 
 Next, click on the "Authentication" icon tab on the far left.
 
@@ -224,7 +185,7 @@ In the text tabs, click on "Providers" and make sure "Email" is enabled.
 
 We recommend turning off "Confirm email" for your own personal instance.
 
-#### 4. Connect to Hosted DB
+##### 4. Connect to Hosted DB
 
 Open up your repository for your hosted instance of Chatbot UI.
 
@@ -257,7 +218,7 @@ supabase db push
 
 Your hosted database should now be set up!
 
-### 3. Setup Frontend with Vercel
+#### 3. Setup Frontend with Vercel
 
 Go to [Vercel](https://vercel.com/) and create a new project.
 
@@ -283,10 +244,8 @@ Click "Deploy" and wait for your frontend to deploy.
 
 Once deployed, you should be able to use your hosted instance of Chatbot UI via the URL Vercel gives you.
 
-## Contributing
+# Acknowledgement
 
-We are working on a guide for contributing.
+The success of this competition would not have been possible without the dedication and sleepless nights shared with my teammates. Additionally, I want to express my deepest gratitude to a silent supporter: [Sun Paris](https://github.com/SunParis)
 
-## Contact
-
-Message Mckay on [Twitter/X](https://twitter.com/mckaywrigley)
+Thank you for working with me on backend-frontend communication, and for being the most insightful computer science students I know, especially in understanding programming languages. Even though you weren’t part of the competition, you stayed up until 4 AM with me, helping to build the very first version of our system. Wishing you all the best in your research and studies—your hard work and knowledge will surely take you far! 🚀
